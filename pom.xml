@@ -74,7 +74,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>edu.iit.cs.cs445.spring2020.Main</mainClass>
+                    <mainClass>Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
