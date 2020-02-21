@@ -18,3 +18,5 @@ jobs:
       run: mvn clean install
     - name: Unit Testings
       run: mvn test
+    - name : Execute program
+      run: mvn exec:java
