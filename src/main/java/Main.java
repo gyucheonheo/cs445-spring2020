@@ -19,7 +19,6 @@ public class Main {
      */
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
-        // in edu.iit.cs445.gheo1 package
         final ResourceConfig rc = new ResourceConfig().packages("edu.iit.cs.cs445.spring2020");
 
         // create and start a new instance of grizzly http server
