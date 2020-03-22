@@ -1,6 +1,6 @@
-package Entity.Ride;
+package Entity.Trip;
 
-public class NullRide extends Ride{
+public class NullTrip extends Trip {
     @Override
     public boolean isNil(){
         return true;

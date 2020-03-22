@@ -1,4 +1,4 @@
-package Entity.Account.Driver;
+package Entity.Account.User.Driver;
 
 public class NullDriver extends Driver{
     @Override

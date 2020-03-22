@@ -1,4 +1,4 @@
-package Entity.Account.Rider;
+package Entity.Account.User.Rider;
 
 public class NullRider extends Rider{
     @Override

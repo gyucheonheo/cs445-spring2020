@@ -1,4 +1,4 @@
-package Entity.Account.Manager;
+package Entity.Account.Administrator.Manager;
 
 public class NullManager extends Manager {
     @Override
