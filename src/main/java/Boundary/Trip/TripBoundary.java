@@ -1,4 +1,4 @@
-package Boundary;
+package Boundary.Trip;
 
 public interface TripBoundary {
 }
