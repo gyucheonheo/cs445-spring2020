@@ -1,4 +1,4 @@
-package Entity.Car;
+package Entity.Trip.Car;
 
 public class NullCar extends Car {
     @Override
