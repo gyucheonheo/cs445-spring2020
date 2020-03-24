@@ -1,4 +1,5 @@
 import Entity.Account.CellPhoneFormat.CellPhoneFormat;
+import junit.framework.Assert;
 import org.junit.Test;
 
 public class CellPhoneFormatTest {
@@ -14,7 +15,11 @@ public class CellPhoneFormatTest {
     public void if_first_is_greater_than_3_digit_it_throws_First_MustBeThreeDigitException(){
         CellPhoneFormat cellphone = new CellPhoneFormat("1111", "222","4444");
     }
-
+    @Test
+    public void getFirstTest(){
+        CellPhoneFormat cellphone = new CellPhoneFormat("111", "222","4444");
+        Assert.assertEquals("111", cellphone.getFirst());
+    }
     @Test(expected=CellPhoneFormat.MiddleMustBeDigit.class)
     public void if_middle_is_not_digit_it_throws_MiddleMustBeDigitException(){
         CellPhoneFormat cellphone = new CellPhoneFormat("111", "a22", "4444");
@@ -28,6 +33,11 @@ public class CellPhoneFormatTest {
         CellPhoneFormat cellphone = new CellPhoneFormat("111", "2222","4444");
     }
 
+    @Test
+    public void getMiddleTest(){
+        CellPhoneFormat cellphone = new CellPhoneFormat("111", "222","4444");
+        Assert.assertEquals("222", cellphone.getMiddle());
+    }
     @Test(expected=CellPhoneFormat.LastMustBeDigit.class)
     public void if_middle_is_not_digit_it_throws_LastMustBeDigitException(){
         CellPhoneFormat cellphone = new CellPhoneFormat("111", "222", "4a4a");
@@ -40,6 +50,10 @@ public class CellPhoneFormatTest {
     public void if_last_is_greater_than_4_digit_it_throws_LastMustBeFourDigitException(){
         CellPhoneFormat cellphone = new CellPhoneFormat("111", "222","44444");
     }
-
+    @Test
+    public void getLastTest(){
+        CellPhoneFormat cellphone = new CellPhoneFormat("111", "222","4444");
+        Assert.assertEquals("4444", cellphone.getLast());
+    }
 
 }
