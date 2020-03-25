@@ -1,6 +1,6 @@
-package Entity.Note;
+package Entity.Message;
 
-public class NullNote extends Note {
+public class NullMessage extends Message {
     @Override
     public boolean isNil(){
         return true;
