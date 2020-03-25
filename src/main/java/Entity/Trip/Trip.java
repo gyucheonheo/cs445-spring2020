@@ -1,28 +1,27 @@
 package Entity.Trip;
 
 import Entity.Trip.Car.Car;
-import Entity.Trip.Condition.Condition;
 import Entity.Trip.DateTimeFormat.DateTimeFormat;
 import Entity.Trip.LocationInformation.LocationInformation;
+import Entity.Trip.PassengerInformation.PassengerInformation;
 import Lib.UniqueId;
-
-import java.util.List;
 
 public class Trip {
     private String tid;
     private LocationInformation locationInformation;
     private DateTimeFormat dateTimeInformation;
     private Car carInformation;
-    private int maxPeople;
-    private double amount_per_passenger = 0;
-    private List<Condition> conditions;
+    private PassengerInformation passengerInformation;
 
     public Trip(){
 
     }
-    public Trip(LocationInformation locationInformation, DateTimeFormat dateInformation, Car car, int maxPeople, double amount_per_passenger, List<Condition> conditions){
+    public Trip(LocationInformation locationInformation, Car carInformation, PassengerInformation passengerInformation){
+        dateTimeInformation = new DateTimeFormat("DD-MM-YYYY,HH:MM");
         this.tid = UniqueId.getUniqueID();
-
+        this.locationInformation = locationInformation;
+        this.carInformation = carInformation;
+        this.passengerInformation = passengerInformation;
     }
 
     public boolean isNil(){
