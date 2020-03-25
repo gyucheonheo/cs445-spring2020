@@ -1,6 +1,6 @@
 package Entity.Message;
 
-import Lib.ThreeLetterMonthDateTimeFormatter;
+import Lib.DateTimeWithPattern;
 import Lib.UniqueId;
 
 public class Message {
@@ -13,7 +13,7 @@ public class Message {
     }
     public Message(String sentBy, String body){
         this.mid = UniqueId.getUniqueID();
-        date = ThreeLetterMonthDateTimeFormatter.getDate("DD-MMM-YYYY , hh:mm:ss");
+        date = DateTimeWithPattern.getDate("DD-MMM-YYYY , hh:mm:ss");
         this.sentBy = sentBy;
         this.body = body;
     }
