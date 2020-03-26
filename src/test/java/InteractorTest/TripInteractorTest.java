@@ -75,7 +75,7 @@ public class TripInteractorTest {
         Trip updatedTrip = tb.getTripById(tid);
         Assert.assertEquals(tid, updatedTrip.getTid());
         Assert.assertEquals("Chicago", updatedTrip.getLocationInformation().getStartingPoint().getCity());
-        Assert.assertEquals("60623", updatedTrip.getLocationInformation().getStartingPoint().getZip());
+        Assert.assertEquals("60616", updatedTrip.getLocationInformation().getStartingPoint().getZip());
         Assert.assertEquals("San Fransisco", updatedTrip.getLocationInformation().getEndingPoint().getCity());
         Assert.assertEquals("", updatedTrip.getLocationInformation().getEndingPoint().getZip());
 
