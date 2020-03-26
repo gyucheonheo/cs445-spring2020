@@ -1,14 +1,54 @@
 package Interactor;
 
-import Boundary.TripBoundary;
+import Boundary.Trip.TripInteractorBoundary;
+import Entity.Boundary.Trip.Car.Car;
+import Entity.Boundary.Trip.LocationInformation.LocationInformation;
+import Entity.Boundary.Trip.Rules.Rules;
+import Entity.Bounded.Trip.BoundedTrip;
+import Entity.Boundary.Trip.Trip;
 
-public class TripInteractor implements TripBoundary {
-    private final static TripInteractor singleton = new TripInteractor();
+import java.util.HashMap;
+import java.util.Map;
 
-    private TripInteractor(){
+public enum TripInteractor implements TripInteractorBoundary {
+    INSTANCE;
+    private static Map<String, Trip> trips = new HashMap<>();
+
+    public void createTrip(LocationInformation locationInformation, Car carInformation, Rules rules) {
+        Trip newTrip = BoundedTrip.Make(locationInformation, carInformation, rules);
+        trips.put(newTrip.getTid(), newTrip);
+    }
+
+    public void updateTrip(String tid, LocationInformation locationInformation, Car carInformation, Rules rules) {
+       if(!trips.containsKey(tid)){
+           throw new NotFoundByTripIdException();
+       }
+       Trip currentTrip = trips.get(tid);
+       currentTrip.setCarInformation(carInformation);
+       currentTrip.setLocationInformation(locationInformation);
+       currentTrip.setRules(rules);
+    }
+
+    public void deleteTrip(String tid) {
+        if(!trips.containsKey(tid)){
+            throw new NotFoundByTripIdException();
+        }
+        trips.remove(tid);
+    }
+
+    public Map<String, Trip> getAllTrips() {
+        return trips;
+    }
+
+    public Trip getTripById(String tid) {
+        if(!trips.containsKey(tid)){
+            throw new NotFoundByTripIdException();
+        }
+        return trips.get(tid);
+    }
+
+    public void searchTrip() {
 
     }
-    public static TripInteractor getInstance(){
-        return singleton;
-    }
+
 }
