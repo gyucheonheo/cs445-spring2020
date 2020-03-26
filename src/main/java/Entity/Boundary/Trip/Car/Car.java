@@ -11,4 +11,5 @@ public interface Car {
 
     class PlateSerialNotAllowedEmpty extends RuntimeException{}
     class PlateStateNotAllowedToExceedTwoCharacter extends RuntimeException{}
+    class PlateStateAllowedOnlyTwoCharacter extends RuntimeException{ }
 }

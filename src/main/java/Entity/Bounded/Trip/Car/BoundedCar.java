@@ -26,7 +26,12 @@ public class BoundedCar implements Car {
                 if(plateState.length() != 2){
                     throw new PlateStateNotAllowedToExceedTwoCharacter();
                 }
-                this.plateState = plateState;
+                for( char c : plateState.toCharArray()){
+                    if(!Character.isAlphabetic(c)){
+                        throw new PlateStateAllowedOnlyTwoCharacter();
+                    }
+                }
+                this.plateState = plateState.toUpperCase();
             }
             private void setPlateSerial(String plateSerial){
                 if(plateSerial.isEmpty()){
