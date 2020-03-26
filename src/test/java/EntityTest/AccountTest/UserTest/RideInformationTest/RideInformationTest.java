@@ -1,4 +1,7 @@
-import Entity.Account.User.RideInformation.RideInformation;
+package EntityTest.AccountTest.UserTest.RideInformationTest;
+
+import Entity.Boundary.Account.User.RideInformation.RideInformation;
+import Entity.Bounded.Account.User.RideInformation.BoundedRideInformation;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +10,12 @@ public class RideInformationTest {
     private RideInformation rInfo;
     @Before
     public void setUp(){
-        rInfo = new RideInformation();
+        rInfo = BoundedRideInformation.Make();
+    }
+
+    @Test
+    public void NormalRideInformation_isNil_must_return_false(){
+       Assert.assertFalse(rInfo.isNil());
     }
 
     @Test
@@ -26,6 +34,7 @@ public class RideInformationTest {
     public void rides_should_not_be_negative(){
         Assert.assertTrue(rInfo.getRides() >= 0);
     }
+
     @Test
     public void average_ratings_should_not_be_negative(){
         Assert.assertTrue(rInfo.getAverageRating() >=0);
