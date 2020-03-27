@@ -19,9 +19,12 @@ public class BoundedLocation implements Location {
         }
             private void setCity(String city){
                 if(city.isEmpty()){
-                    throw new CityNotAllowedEmpty();
+                    throw new CityNotAllowedEmptyException();
                 }
-                this.city = city;
+                if(!city.matches("[\\s]*[a-zA-Z]+\\s?[a-zA-Z]*")){
+                    throw new CityNotAllowedSpecialCharactersException();
+                }
+                this.city = city.trim();
             }
             private void setZip(String zip){
                 this.zip = zip;

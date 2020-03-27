@@ -5,5 +5,7 @@ public interface Location {
     String getZip();
     boolean isNil();
 
-    class CityNotAllowedEmpty extends RuntimeException{}
+    class CityNotAllowedEmptyException extends RuntimeException{}
+
+    class CityNotAllowedSpecialCharactersException extends RuntimeException{}
 }
