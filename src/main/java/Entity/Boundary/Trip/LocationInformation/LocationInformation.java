@@ -6,4 +6,7 @@ public interface LocationInformation {
     boolean isNil();
     Location getStartingPoint();
     Location getEndingPoint();
+
+    class PassingNullLocationNotAllowedException extends RuntimeException{
+    }
 }

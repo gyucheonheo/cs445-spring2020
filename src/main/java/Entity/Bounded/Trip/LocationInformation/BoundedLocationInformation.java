@@ -12,6 +12,9 @@ public class BoundedLocationInformation implements LocationInformation {
     }
 
     public static LocationInformation Make(Location startingPoint, Location endingPoint){
+        if(startingPoint.isNil() || endingPoint.isNil()){
+            throw new PassingNullLocationNotAllowedException();
+        }
         return new BoundedLocationInformation(startingPoint, endingPoint);
     }
         private BoundedLocationInformation(Location startingPoint, Location endingPoint){
