@@ -21,7 +21,7 @@ public class BoundedLocation implements Location {
                 if(city.isEmpty()){
                     throw new CityNotAllowedEmptyException();
                 }
-                if(!city.matches("[\\s]*[a-zA-Z]+\\s?[a-zA-Z]*")){
+                if(!city.matches("[\\s]*[a-zA-Z]+\\s?[a-zA-Z]*\\s*")){
                     throw new CityNotAllowedSpecialCharactersException();
                 }
                 this.city = city.trim();
