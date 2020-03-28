@@ -3,24 +3,34 @@ package Interactor;
 import Boundary.MessageInteractorBoundary;
 import Boundary.Trip.TripInteractorBoundary;
 import Entity.Boundary.Message.Message;
+import Entity.Boundary.Trip.Trip;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public enum MessageInteractor implements MessageInteractorBoundary {
     INSTANCE;
-    private static List<Message> msgs = new ArrayList<>();
+    private static Map<String, List<Message>> msgs = new HashMap<>();
     private TripInteractorBoundary tb = TripInteractor.INSTANCE;
-    public void sendMsgToRide(String rid, Message msg) {
-        try {
-            tb.getTripById(rid);
+
+    public void sendMsgToRide(String rid, Message msg){
+        tb.getTripById(rid);
+        List<Message> msgList;
+        if(!msgs.containsKey(rid)){
+           msgList = new ArrayList<>();
+        } else {
+            msgList = msgs.get(rid);
         }
-        catch(TripInteractorBoundary.NotFoundByTripIdException e){
-            throw new RideMatchedByRidNotFoundException();
-        }
+        msgList.add(msg);
+        msgs.put(rid, msgList);
     }
 
     public List<Message> getAllMessagesByRid(String rid) {
-        return null;
+        if(!msgs.containsKey(rid)){
+            msgs.put(rid, new ArrayList<>());
+        }
+        return msgs.get(rid);
     }
 }
