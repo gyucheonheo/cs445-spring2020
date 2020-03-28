@@ -40,6 +40,16 @@ public class LocationTest {
         Location location = BoundedLocation.Make("San Fransisco", "");
         Assert.assertEquals("San Fransisco", location.getCity());
     }
+    @Test
+    public void cityMustBeCombinationOfCharactersAndSpaces2(){
+        Location location = BoundedLocation.Make("San Fransisco   ", "");
+        Assert.assertEquals("San Fransisco", location.getCity());
+    }
+
+    @Test(expected=Location.CityNotAllowedSpecialCharactersException.class)
+    public void if_city_contains_special_characters_it_throws_CityNotAllowedSpecialChracterException2(){
+        BoundedLocation.Make("San Fra nsisco", "");
+    }
 
     @Test(expected=Location.CityNotAllowedSpecialCharactersException.class)
     public void if_city_contains_special_characters_it_throws_CityNotAllowedSpecialChracterException(){
