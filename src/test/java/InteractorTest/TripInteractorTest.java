@@ -30,22 +30,25 @@ public class TripInteractorTest {
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions); ;
-        tb.createTrip(locationInfo, carInfo, passengerInfo);
-
+        Trip t1 = tb.createTrip(locationInfo, carInfo, passengerInfo);
+        tb.registerTrip(t1);
         LocationInformation locationInfo1 = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("St Louis",""));
         Car carInfo1 = BoundedCar.Make(BoundedVehicle.Make("Toyota", "HIGHLAND","White"), "NY", "CARDI");
         Rules passengerInfo1 = BoundedRules.Make(4, 15, conditions); ;
-        tb.createTrip(locationInfo1, carInfo1, passengerInfo1);
+        Trip t2 = tb.createTrip(locationInfo1, carInfo1, passengerInfo1);
+        tb.registerTrip(t2);
 
         LocationInformation locationInfo2 = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("New York",""));
         Car carInfo2 = BoundedCar.Make(BoundedVehicle.Make("Toyota", "HIGHLAND","White"), "WI", "WHOTATBE");
         Rules passengerInfo2 = BoundedRules.Make(4, 15, conditions); ;
-        tb.createTrip(locationInfo2, carInfo2, passengerInfo2);
+        Trip t3 = tb.createTrip(locationInfo2, carInfo2, passengerInfo2);
+        tb.registerTrip(t3);
 
         tids = new ArrayList<>();
-        for(Map.Entry<String, Trip> entry : tb.getAllTrips().entrySet()){
-            tids.add(entry.getKey());
-        }
+
+        tids.add(t1.getTid());
+        tids.add(t2.getTid());
+        tids.add(t3.getTid());
 
     }
 

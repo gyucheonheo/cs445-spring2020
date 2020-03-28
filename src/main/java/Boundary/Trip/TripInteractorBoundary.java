@@ -8,7 +8,8 @@ import Entity.Boundary.Trip.Trip;
 import java.util.Map;
 
 public interface TripInteractorBoundary {
-    void createTrip(LocationInformation locationInformation, Car carInformation, Rules rules);
+    Trip createTrip(LocationInformation locationInformation, Car carInformation, Rules rules);
+    void registerTrip(Trip t);
     void updateTrip(String tid, LocationInformation locationInformation, Car carInformation, Rules rules);
     void deleteTrip(String tid);
     Map<String, Trip> getAllTrips();
