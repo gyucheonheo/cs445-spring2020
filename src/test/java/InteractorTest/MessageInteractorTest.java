@@ -10,6 +10,7 @@ import Entity.Boundary.Trip.Car.Vehicle.Vehicle;
 import Entity.Boundary.Trip.LocationInformation.Location.Location;
 import Entity.Boundary.Trip.LocationInformation.LocationInformation;
 import Entity.Boundary.Trip.Rules.Rules;
+import Entity.Boundary.Trip.Trip;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
 import Entity.Bounded.Account.User.BoundedUser;
 import Entity.Bounded.Message.BoundedMessage;
@@ -20,6 +21,7 @@ import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
 import Interactor.MessageInteractor;
 import Interactor.TripInteractor;
+import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,6 +30,7 @@ import java.util.List;
 
 public class MessageInteractorTest {
     private static MessageInteractorBoundary mb = MessageInteractor.INSTANCE;
+    private static Trip trip;
     private static String driverAid;
     private static String riderAid;
     private static TripInteractorBoundary tb = TripInteractor.INSTANCE;
@@ -49,19 +52,36 @@ public class MessageInteractorTest {
         Car car = BoundedCar.Make(v, "IL", "ABCDEF");
         List<String> conditions = new ArrayList<>();
 
-        Rules p = BoundedRules.Make(2,6.0, conditions);
-        tb.createTrip(l, car, p);
+        Rules r = BoundedRules.Make(2,6.0, conditions);
+        trip = tb.createTrip(l, car, r);
+        tb.registerTrip(trip);
+    }
 
+    @Test(expected=TripInteractor.NotFoundByTripIdException.class)
+    public void whenSendMsgToRide_failed_because_of_rid_not_found_it_should_throws_exception(){
+       Message m = BoundedMessage.Make(riderAid, "I am here!");
+       mb.sendMsgToRide("asdf", m);
+    }
+
+    @Test
+    public void whenNoMessageSent_its_rid_messages_have_0_element(){
+        String tid = trip.getTid();
+        Assert.assertEquals(0, mb.getAllMessagesByRid(tid).size());
     }
     @Test
-    public void whenSendMsgToRide_succeed_it_should_have_same_body_and_id(){
-/*        mb.sendMsgToRide(rid, );
-        Assert.assertEquals(rid, )
- */
+    public void whenSendMsgToRide_sends_first_message_its_rid_messages_have_1element(){
+        Message m = BoundedMessage.Make(riderAid, "I am here!");
+        String tid = trip.getTid();
+        mb.sendMsgToRide(tid, m);
+        Assert.assertEquals(1, mb.getAllMessagesByRid(tid).size());
     }
-    @Test(expected=MessageInteractorBoundary.RideMatchedByRidNotFoundException.class)
-    public void whenSendMsgToRide_failed_because_of_rid_not_found_it_should_throws_exception(){
-       Message m = BoundedMessage.Make("5", "I am here!");
-       mb.sendMsgToRide("asdf", m);
+    @Test
+    public void whenSendMsgToRide_sends_message_twice_its_rid_messages_have_2element(){
+        Message m1 = BoundedMessage.Make(riderAid, "I am here!");
+        Message m2 = BoundedMessage.Make(driverAid, "I saw you");
+        String tid = trip.getTid();
+        mb.sendMsgToRide(tid, m1);
+        mb.sendMsgToRide(tid, m2);
+        Assert.assertEquals(2, mb.getAllMessagesByRid(tid).size());
     }
 }
