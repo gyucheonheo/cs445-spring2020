@@ -3,7 +3,6 @@ package Interactor;
 import Boundary.MessageInteractorBoundary;
 import Boundary.Trip.TripInteractorBoundary;
 import Entity.Boundary.Message.Message;
-import Entity.Boundary.Trip.Trip;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +28,8 @@ public enum MessageInteractor implements MessageInteractorBoundary {
 
     public List<Message> getAllMessagesByRid(String rid) {
         if(!msgs.containsKey(rid)){
-            msgs.put(rid, new ArrayList<>());
+            List<Message> msgList = new ArrayList<>();
+            msgs.put(rid, msgList);
         }
         return msgs.get(rid);
     }

@@ -1,8 +1,10 @@
 package EntityTest.MessageTest;
 
+import Entity.Boundary.Account.User.User;
 import Entity.Boundary.Message.Message;
+import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
+import Entity.Bounded.Account.User.BoundedUser;
 import Entity.Bounded.Message.BoundedMessage;
-import Entity.Bounded.Message.NullBoundedMessage;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +21,7 @@ public class MessageTest {
        BoundedMessage.Make("", "I am here");
     }
     @Test(expected= Message.BodyNotAllowedEmptyException.class)
-    public void bodySentByNotAllowed_it_should_throw_BodyNotAllowedEmptyException(){
+    public void emptybodySentByNotAllowed_it_should_throw_BodyNotAllowedEmptyException(){
         BoundedMessage.Make("123", "");
     }
     @Test

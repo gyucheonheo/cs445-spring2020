@@ -7,6 +7,7 @@ import Entity.Boundary.Account.User.User;
 import Entity.Boundary.Message.Message;
 import Entity.Boundary.Trip.Car.Car;
 import Entity.Boundary.Trip.Car.Vehicle.Vehicle;
+import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
 import Entity.Boundary.Trip.LocationInformation.Location.Location;
 import Entity.Boundary.Trip.LocationInformation.LocationInformation;
 import Entity.Boundary.Trip.Rules.Rules;
@@ -16,12 +17,14 @@ import Entity.Bounded.Account.User.BoundedUser;
 import Entity.Bounded.Message.BoundedMessage;
 import Entity.Bounded.Trip.Car.BoundedCar;
 import Entity.Bounded.Trip.Car.Vehicle.BoundedVehicle;
+import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
 import Interactor.MessageInteractor;
 import Interactor.TripInteractor;
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,8 +38,8 @@ public class MessageInteractorTest {
     private static String riderAid;
     private static TripInteractorBoundary tb = TripInteractor.INSTANCE;
 
-    @BeforeClass
-    public static void setUp_createTrip_before_sending_msg(){
+    @Before
+    public void setUp_createTrip_before_sending_msg(){
         CellPhoneFormat driverCellPhone = BoundedCellPhoneFormat.Make("312","444","5555");
         User driver = BoundedUser.Make("Gyucheon", "Heo", driverCellPhone,"http://example.com/mypicture.jpg");
         driverAid = driver.getAid();
@@ -51,9 +54,11 @@ public class MessageInteractorTest {
         Vehicle v = BoundedVehicle.Make("Hyundai", "Elantra", "White");
         Car car = BoundedCar.Make(v, "IL", "ABCDEF");
         List<String> conditions = new ArrayList<>();
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,0);
 
         Rules r = BoundedRules.Make(2,6.0, conditions);
-        trip = tb.createTrip(l, car, r);
+
+        trip = tb.createTrip(driverAid, l, car, dt, r);
         tb.registerTrip(trip);
     }
 
