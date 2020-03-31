@@ -17,7 +17,7 @@ public class BoundedRate implements Rate {
     }
         private BoundedRate(String sentBy, String firstName, int rating, String comment){
             rid = UniqueId.getUniqueID();
-            date = BoundedDateTimeFormat.Make("DD-MMM-YYYY,hh:mm:ss", ",").getDate();
+            date = BoundedDateTimeFormat.MakeNow().getDate();
             setSentBy(sentBy);
             setFirstName(firstName);
             setRating(rating);
@@ -28,14 +28,20 @@ public class BoundedRate implements Rate {
             if(sentBy.isEmpty()){
                 throw new SentByNotAllowedEmptyException();
             }
-            for(char c : sentBy.toCharArray()){
-                if(!Character.isDigit(c)){
-                    throw new SentByAllowOnlyNumberException();
-                }
+            if(!isAllNumber(sentBy)){
+                throw new SentByAllowOnlyNumberException();
             }
             this.sentBy = sentBy;
         }
-        private void setFirstName(String firstName){
+            private boolean isAllNumber(String s) {
+                for (char c : s.toCharArray()) {
+                    if(!Character.isDigit(c)){
+                        return false;
+                    }
+                }
+                return true;
+            }
+    private void setFirstName(String firstName){
             if(firstName.isEmpty()){
                 throw new FirstNameByNotAllowedEmptyException();
             }
