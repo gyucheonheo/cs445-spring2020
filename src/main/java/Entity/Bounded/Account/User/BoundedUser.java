@@ -1,23 +1,20 @@
 package Entity.Bounded.Account.User;
 
 import Entity.Boundary.Account.CellPhoneFormat.CellPhoneFormat;
-import Entity.Boundary.Account.User.RideInformation.RideInformation;
 import Entity.Boundary.Account.User.User;
-import Entity.Bounded.Account.User.RideInformation.BoundedRideInformation;
+import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
+import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Lib.UniqueId;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class BoundedUser implements User {
     private String id;
-    private String whenCreated;
+    private DateTimeFormat whenCreated;
     private String firstName;
     private String lastName;
     private CellPhoneFormat cellphone;
     private String picture;
-    private RideInformation asDriver;
-    private RideInformation asRider;
+
     private boolean isActive;
 
     public static User Make(String first, String last, CellPhoneFormat cellPhone, String picture){
@@ -25,13 +22,11 @@ public class BoundedUser implements User {
     }
         private BoundedUser(String firstName, String lastName, CellPhoneFormat cellPhone, String picture){
             this.id = UniqueId.getUniqueID();
-            this.whenCreated = new SimpleDateFormat("dd-mm-yyyy, hh:mm:ss").format(new Date());
+            this.whenCreated = BoundedDateTimeFormat.MakeNow();
             setFirst(firstName);
             setLast(lastName);
             this.cellphone = cellPhone;
             this.picture = picture;
-            this.asDriver = BoundedRideInformation.Make();
-            this.asRider =  BoundedRideInformation.Make();
             this.isActive = false;
         }
 
@@ -55,11 +50,28 @@ public class BoundedUser implements User {
         return this.isActive;
     }
 
-    public RideInformation getAsDriver(){
-        return this.asDriver;
+    public void setIsActive(boolean b) {
+        this.isActive = b;
     }
 
-    public RideInformation getAsRider(){
-        return this.asRider;
+    public void setFirstName(String first) { this.firstName = first;}
+
+    public void setLastName(String last) { this.lastName = last;}
+
+    public void setCellPhoneFormat(CellPhoneFormat cellPhone) { this.cellphone = cellPhone; }
+
+    public void setPicture(String picture) { this.picture = picture; }
+
+    public String getFirstName() {
+        return this.firstName;
     }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public CellPhoneFormat getCellPhoneFormat() {
+        return this.cellphone;
+    }
+
 }
