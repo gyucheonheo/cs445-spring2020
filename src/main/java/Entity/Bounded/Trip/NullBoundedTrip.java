@@ -1,6 +1,7 @@
 package Entity.Bounded.Trip;
 
 import Entity.Boundary.Trip.Car.Car;
+import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
 import Entity.Boundary.Trip.LocationInformation.LocationInformation;
 import Entity.Boundary.Trip.Rules.Rules;
 import Entity.Boundary.Trip.Trip;
@@ -26,6 +27,10 @@ public class NullBoundedTrip implements Trip {
 
     }
 
+    public void setDateTimeFormat(DateTimeFormat dt) {
+
+    }
+
     @Override
     public LocationInformation getLocationInformation() {
         return null;
@@ -41,8 +46,17 @@ public class NullBoundedTrip implements Trip {
         return null;
     }
 
+    public DateTimeFormat getDateTimeFormat() {
+        return null;
+    }
+
     @Override
     public boolean isNil(){
         return true;
+    }
+
+    @Override
+    public String getAid() {
+        return null;
     }
 }
