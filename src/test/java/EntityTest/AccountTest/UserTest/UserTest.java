@@ -25,21 +25,19 @@ public class UserTest {
     public void whenCreateUser_and_empty_last_name_throws_lastName_empty_exception(){
         BoundedUser.Make("a", "", cellPhone, pictureURL);
     }
-    @Test
-    public void whenCreateUser_getAsDriver_must_be_of_RideInformation_class(){
-        User testUser = BoundedUser.Make("John", "Doe", cellPhone, pictureURL);
-        Assert.assertEquals(BoundedRideInformation.class, testUser.getAsDriver().getClass());
-    }
-
-    @Test
-    public void whenCreateUser_getAsRider_must_be_of_RideInformation_class(){
-        User testUser = BoundedUser.Make("John", "Doe", cellPhone, pictureURL);
-        Assert.assertEquals(BoundedRideInformation.class, testUser.getAsRider().getClass());
-    }
 
     @Test
     public void createUser_must_set_isActive_to_false_initially(){
         User testUser = BoundedUser.Make("John", "Doe", cellPhone, pictureURL);
+        Assert.assertFalse(testUser.getIsActive());
+    }
+
+    @Test
+    public void createUser_must_set_isActive_to_the_given_boolean(){
+        User testUser = BoundedUser.Make("John", "Doe", cellPhone, pictureURL);
+        testUser.setIsActive(true);
+        Assert.assertTrue(testUser.getIsActive());
+        testUser.setIsActive(false);
         Assert.assertFalse(testUser.getIsActive());
     }
 }
