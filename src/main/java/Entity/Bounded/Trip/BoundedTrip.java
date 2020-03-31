@@ -5,11 +5,11 @@ import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
 import Entity.Boundary.Trip.LocationInformation.LocationInformation;
 import Entity.Boundary.Trip.Rules.Rules;
 import Entity.Boundary.Trip.Trip;
-import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Lib.UniqueId;
 
 public class BoundedTrip implements Trip {
     private String tid;
+    private String aid;
     private LocationInformation locationInformation;
     private DateTimeFormat dateTimeInformation;
     private Car carInformation;
@@ -19,11 +19,12 @@ public class BoundedTrip implements Trip {
         return new NullBoundedTrip();
     }
 
-    public static Trip Make(LocationInformation locationInformation, Car carInformation, Rules rules){
-        return new BoundedTrip(locationInformation, carInformation, rules);
+    public static Trip Make(String aid, LocationInformation locationInformation, Car carInformation, DateTimeFormat dateTime, Rules rules){
+        return new BoundedTrip(aid, locationInformation, carInformation, dateTime, rules);
     }
-        private BoundedTrip(LocationInformation locationInformation, Car carInformation, Rules rules){
-            dateTimeInformation = BoundedDateTimeFormat.Make("DD-MM-YYYY,HH:MM", ",");
+        private BoundedTrip(String aid, LocationInformation locationInformation, Car carInformation, DateTimeFormat dateTime, Rules rules){
+            this.aid = aid;
+            this.dateTimeInformation = dateTime;
             this.tid = UniqueId.getUniqueID();
             setLocationInformation(locationInformation);
             setCarInformation(carInformation);
@@ -33,7 +34,8 @@ public class BoundedTrip implements Trip {
     public String getTid(){
         return this.tid;
     }
-
+    public String getAid() { return this.aid; }
+    public DateTimeFormat getDateTimeFormat(){ return this.dateTimeInformation; }
     public void setLocationInformation(LocationInformation locationInformation){
         this.locationInformation = locationInformation;
     }
@@ -43,6 +45,7 @@ public class BoundedTrip implements Trip {
     public void setRules(Rules rules){
         this.rules = rules;
     }
+    public void setDateTimeFormat(DateTimeFormat dt){ this.dateTimeInformation = dt;}
     public LocationInformation getLocationInformation(){
         return this.locationInformation;
     }
