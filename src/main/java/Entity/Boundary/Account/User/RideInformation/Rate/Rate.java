@@ -8,22 +8,5 @@ public interface Rate {
     int getRating();
     String getComment();
 
-    class SentByNotAllowedEmptyException extends RuntimeException {
-    }
-
-    class SentByAllowOnlyNumberException extends RuntimeException {
-    }
-
-    class FirstNameByNotAllowedEmptyException extends RuntimeException {
-    }
-
-    class LessThanOneRatingNotAllowedException extends RuntimeException {
-    }
-
-    class GreaterThanFiveRatingNotAllowedException extends RuntimeException {
-    }
-
-    class CommentNotAllowedEmptyException extends RuntimeException{
-    }
 }
 

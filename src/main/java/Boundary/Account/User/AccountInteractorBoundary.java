@@ -21,10 +21,4 @@ public interface AccountInteractorBoundary {
 
     List<User> searchUserByKeyword(String s);
 
-    void rateUser(String tid, Rate r);
-
-    class UserNotFoundException extends RuntimeException{}
-
-    class UserDoNotHavePermissionToRate extends RuntimeException{
-    }
 }

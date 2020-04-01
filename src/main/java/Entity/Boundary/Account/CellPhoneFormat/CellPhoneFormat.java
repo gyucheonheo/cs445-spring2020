@@ -5,10 +5,4 @@ public interface CellPhoneFormat {
     String getMiddle();
     String getLast();
 
-    class FirstMustBeThreeDigit extends RuntimeException{}
-    class FirstMustBeDigit extends RuntimeException{}
-    class MiddleMustBeThreeDigit extends RuntimeException{}
-    class MiddleMustBeDigit extends RuntimeException{}
-    class LastMustBeFourDigit extends RuntimeException{}
-    class LastMustBeDigit extends RuntimeException{}
 }

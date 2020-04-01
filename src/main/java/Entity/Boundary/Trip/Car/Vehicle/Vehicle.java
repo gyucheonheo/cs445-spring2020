@@ -4,13 +4,4 @@ public interface Vehicle {
     String getMake();
     String getModel();
     String getColor();
-
-    class MakeNotAllowedEmpty extends RuntimeException {
-    }
-
-    class ModelNotAllowedEmpty extends RuntimeException {
-    }
-
-    class ColorNotAllowedEmpty extends RuntimeException {
-    }
 }

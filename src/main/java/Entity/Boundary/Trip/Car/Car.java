@@ -9,7 +9,4 @@ public interface Car {
 
     boolean isNil();
 
-    class PlateSerialNotAllowedEmpty extends RuntimeException{}
-    class PlateStateNotAllowedToExceedTwoCharacter extends RuntimeException{}
-    class PlateStateAllowedOnlyTwoCharacter extends RuntimeException{ }
 }
