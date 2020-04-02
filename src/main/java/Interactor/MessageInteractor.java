@@ -1,7 +1,7 @@
 package Interactor;
 
 import Boundary.MessageInteractorBoundary;
-import Boundary.Trip.TripInteractorBoundary;
+import Boundary.TripInteractorBoundary;
 import Entity.Boundary.Message.Message;
 
 import java.util.ArrayList;

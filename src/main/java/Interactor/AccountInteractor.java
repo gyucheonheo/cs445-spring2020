@@ -1,26 +1,19 @@
 package Interactor;
 
-import Boundary.Account.User.AccountInteractorBoundary;
+import Boundary.AccountInteractorBoundary;
 import Entity.Boundary.Account.CellPhoneFormat.CellPhoneFormat;
-import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
 import Entity.Boundary.Account.User.User;
 import Entity.Bounded.Account.User.BoundedUser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public enum AccountInteractor implements AccountInteractorBoundary {
     INSTANCE;
-    private Map<String, User> users = new HashMap<>();
+    private List<User> users = new ArrayList<>();
 
     public List<User> getAllUsers() {
-        List<User> allUsers = new ArrayList<>();
-        for(Map.Entry<String, User> entry : users.entrySet()){
-            allUsers.add(entry.getValue());
-        }
-        return allUsers;
+        return users;
     }
 
     public User createUser(String first, String last, CellPhoneFormat cellPhone, String picture){
@@ -28,47 +21,50 @@ public enum AccountInteractor implements AccountInteractorBoundary {
     }
 
     public void registerUser(User u) {
-        users.put(u.getAid(), u);
+        this.wrappedRegisterUser(u);
     }
+        private void wrappedRegisterUser(User u){
+            users.add(u);
+        }
 
     public void activateUser(String aid){
-        if(!users.containsKey(aid)){
-            throw new UserNotFoundException();
-        }
-        User u = users.get(aid);
-        u.setIsActive(true);
+        wrappedActivateuser(aid);
     }
-
+        private void wrappedActivateuser(String aid){
+            User u = this.wrappedGetUserById(aid);
+            u.setIsActive(true);
+        }
     public void updateUser(String aid, String first, String last, CellPhoneFormat cellPhone, String url) {
-        if(!users.containsKey(aid)){
-            throw new UserNotFoundException();
-        }
-        User u = users.get(aid);
-        u.setFirstName(first);
-        u.setLastName(last);
-        u.setCellPhoneFormat(cellPhone);
-        u.setPicture(url);
+        this.wrappedUpdateUser(aid, first, last, cellPhone, url);
     }
+        private void wrappedUpdateUser(String aid, String first, String last, CellPhoneFormat cellPhone, String url){
+            User u = this.wrappedGetUserById(aid);
+            u.setFirstName(first);
+            u.setLastName(last);
+            u.setCellPhoneFormat(cellPhone);
+            u.setPicture(url);
+        }
 
     public void deleteUser(String aid) {
-        if(!users.containsKey(aid)){
-           throw new UserNotFoundException();
-        }
-        users.remove(aid);
+        this.wrappedDeleteUser(aid);
     }
-
-    public User getUserById(String aid) {
-        if(!users.containsKey(aid)){
-            throw new UserNotFoundException();
+        private void wrappedDeleteUser(String aid){
+            User u = this.wrappedGetUserById(aid);
+            users.remove(u);
         }
-        return users.get(aid);
+    public User getUserById(String aid) {
+        return wrappedGetUserById(aid);
     }
 
     public List<User> searchUserByKeyword(String s) {
         return null;
     }
-
-    public void rateUser(String tid, Rate r) {
-
-    }
+        private User wrappedGetUserById(String aid){
+            for(User u : users){
+                if(u.getAid().equals(aid)){
+                    return u;
+                }
+            }
+            return BoundedUser.Make();
+        }
 }
