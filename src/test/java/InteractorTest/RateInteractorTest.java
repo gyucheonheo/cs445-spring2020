@@ -1,8 +1,9 @@
 package InteractorTest;
 
-import Boundary.Account.User.AccountInteractorBoundary;
+import Boundary.AccountInteractorBoundary;
+import Boundary.RateInteractorBoundary;
 import Boundary.RideRequestInteractorBoundary;
-import Boundary.Trip.TripInteractorBoundary;
+import Boundary.TripInteractorBoundary;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.RideRequest.RideRequest;
@@ -22,8 +23,10 @@ import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
 import Interactor.AccountInteractor;
+import Interactor.RateInteractor;
 import Interactor.RideRequestInteractor;
 import Interactor.TripInteractor;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,10 +37,15 @@ public class RateInteractorTest {
     private User driver;
     private User rider;
     private User stranger;
+    private Trip t1;
+    private RideRequest rr;
+    private RateInteractorBoundary rateI;
     private AccountInteractorBoundary ai;
     private RideRequestInteractorBoundary rri;
+    private TripInteractorBoundary tb;
     @Before
     public void setUp(){
+        rateI = RateInteractor.INSTANCE;
         driver = BoundedUser.Make("driver", "Heo", BoundedCellPhoneFormat.Make("123","333","4444"), "http://google.com/gheo1/jake.png");
         rider = BoundedUser.Make("rider", "Heo", BoundedCellPhoneFormat.Make("123","333","4444"), "http://google.com/gheo1/jake.png");
         stranger = BoundedUser.Make("stranger", "Heo", BoundedCellPhoneFormat.Make("123","333","4444"), "http://google.com/gheo1/jake.png");
@@ -48,10 +56,7 @@ public class RateInteractorTest {
         ai.activateUser(driver.getAid());
         ai.activateUser(rider.getAid());
         ai.activateUser(stranger.getAid());
-    }
-    @Test(expected= AccountInteractorBoundary.UserDoNotHavePermissionToRate.class)
-    public void rateUserCalledByStranger_to_not_related_ride_it_throws_UserDoNotHavePermissionToRate(){
-        TripInteractorBoundary tb = TripInteractor.INSTANCE;
+        tb = TripInteractor.INSTANCE;
         rri = RideRequestInteractor.INSTANCE;
         List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
@@ -59,57 +64,97 @@ public class RateInteractorTest {
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
 
-        Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
+        t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
+        rr = BoundedRideRequest.Make(rider.getAid(),t1.getTid(), 2);
+        rri.requestRide(rr);
+    }
 
-        RideRequest rr = BoundedRideRequest.Make(rider.getAid(),2);
-        rri.requestRide(t1.getTid(), rr);
+    @Test
+    public void rateDriver_succeeds_it_should_be_found(){
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-
-        Rate r = BoundedRate.Make( stranger.getAid(), stranger.getFirstName(), 4, "Nice");
-        ai.rateUser(t1.getTid(), r);
+        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Awesome!");
+        rateI.rateDriver(t1.getTid(), r);
+        Assert.assertEquals(r.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getSentBy());
+        Assert.assertEquals(r.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getFirstName());
+        Assert.assertEquals(r.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getRating());
+        Assert.assertEquals(r.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getComment());
     }
 
-    @Test(expected= AccountInteractorBoundary.UserDoNotHavePermissionToRate.class)
-    public void rateUser_to_deniedRide_throws_UserDoNotHavePermission(){
+    @Test
+    public void when_rateDriver_succeeds_it_should_be_found(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
+        rateI.rateDriver(t1.getTid(), r);
 
-        TripInteractorBoundary tb = TripInteractor.INSTANCE;
-        rri = RideRequestInteractor.INSTANCE;
+        Assert.assertEquals(r.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getSentBy());
+        Assert.assertEquals(r.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getFirstName());
+        Assert.assertEquals(r.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getRating());
+        Assert.assertEquals(r.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getComment());
+
+    }
+    @Test
+    public void rateDriver_twice_it_should_be_found(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
+        rateI.rateDriver(t1.getTid(), r);
+
         List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
 
-        Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
+        Trip t2 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
+        tb.registerTrip(t2);
+        rr = BoundedRideRequest.Make(rider.getAid(),t2.getTid(), 2);
+        rri.requestRide(rr);
+        rri.confirmRide(driver.getAid(), t2.getTid(), rr.getJid());
 
-        RideRequest rr = BoundedRideRequest.Make(rider.getAid(),2);
-        rri.requestRide(t1.getTid(), rr);
-        rri.denyRide(driver.getAid(), t1.getTid(), rr.getJid());
-
-        Rate r = BoundedRate.Make( rider.getAid(), rider.getFirstName(), 4, "Nice");
-        ai.rateUser(t1.getTid(), r);
+        Rate r2 = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
+        rateI.rateDriver(t2.getTid(), r2);
+        Assert.assertEquals(r2.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getSentBy());
+        Assert.assertEquals(r2.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getFirstName());
+        Assert.assertEquals(r2.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getRating());
+        Assert.assertEquals(r2.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getComment());
     }
-    @Test(expected= AccountInteractorBoundary.UserDoNotHavePermissionToRate.class)
-    public void rateUser_to_not_confirmedRide_throws_UserDoNotHavePermission(){
 
-        TripInteractorBoundary tb = TripInteractor.INSTANCE;
-        rri = RideRequestInteractor.INSTANCE;
+
+    @Test
+    public void when_rateRider_succeeds_it_should_be_found(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
+        rateI.rateRider(t1.getTid(), r);
+
+        Assert.assertEquals(r.getSentBy(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getSentBy());
+        Assert.assertEquals(r.getFirstName(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getFirstName());
+        Assert.assertEquals(r.getRating(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getRating());
+        Assert.assertEquals(r.getComment(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getComment());
+
+    }
+    @Test
+    public void rateRider_twice_it_should_be_found(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
+        rateI.rateRider(t1.getTid(), r);
+
         List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
 
-        Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
+        Trip t2 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
+        tb.registerTrip(t2);
+        rr = BoundedRideRequest.Make(rider.getAid(),t2.getTid(), 2);
+        rri.requestRide(rr);
+        rri.confirmRide(driver.getAid(), t2.getTid(), rr.getJid());
 
-        RideRequest rr = BoundedRideRequest.Make(rider.getAid(),2);
-        rri.requestRide(t1.getTid(), rr);
-
-        Rate r = BoundedRate.Make( rider.getAid(), rider.getFirstName(), 4, "Nice");
-        ai.rateUser(t1.getTid(), r);
+        Rate r2 = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
+        rateI.rateRider(t2.getTid(), r2);
+        Assert.assertEquals(r2.getSentBy(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getSentBy());
+        Assert.assertEquals(r2.getFirstName(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getFirstName());
+        Assert.assertEquals(r2.getRating(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getRating());
+        Assert.assertEquals(r2.getComment(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getComment());
     }
-
 }

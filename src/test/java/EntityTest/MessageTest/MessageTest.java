@@ -16,14 +16,6 @@ public class MessageTest {
     public void setUp(){
        m = BoundedMessage.Make("1", "I am here");
     }
-    @Test(expected= Message.SentByNotAllowedEmptyException.class)
-    public void emptySentByNotAllowed_it_should_throw_SentByNotAllowedEmptyException(){
-       BoundedMessage.Make("", "I am here");
-    }
-    @Test(expected= Message.BodyNotAllowedEmptyException.class)
-    public void emptybodySentByNotAllowed_it_should_throw_BodyNotAllowedEmptyException(){
-        BoundedMessage.Make("123", "");
-    }
     @Test
     public void NormalMessage_isNil_must_return_false(){
         Assert.assertFalse(m.isNil());

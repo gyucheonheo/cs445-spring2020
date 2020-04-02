@@ -1,7 +1,7 @@
 package InteractorTest;
 
-import Boundary.Account.User.AccountInteractorBoundary;
-import Boundary.Trip.TripInteractorBoundary;
+import Boundary.AccountInteractorBoundary;
+import Boundary.TripInteractorBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.Trip.Car.Car;
 import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
@@ -17,9 +17,7 @@ import Entity.Bounded.Trip.Rules.BoundedRules;
 import Entity.Boundary.Trip.Trip;
 import Interactor.AccountInteractor;
 import Interactor.TripInteractor;
-import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,75 +77,5 @@ public class TripInteractorTest {
         tids.add(t2.getTid());
         tids.add(t3.getTid());
 
-    }
-
-    @Test(expected=TripInteractor.NotFoundByTripIdException.class)
-    public void if_getTripById_cannot_find_trip_by_tid_it_throws_NotFoundByTripIdException(){
-        tb.getTripById("ajsdkfjadkslf");
-    }
-
-    @Test(expected=TripInteractorBoundary.UserDoNotHavePermissionToUpdateTrip.class)
-    public void updateTripByNotTripOwner_throws_UserDoNotHavePermissionToUpdateTrip(){
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        LocationInformation locationInfo = BoundedLocationInformation.Make();
-        Car carInfo = BoundedCar.Make();
-        Rules passengerInfo = BoundedRules.Make();
-        tb.updateTrip(driver1.getAid(), t2.getTid(), locationInfo, carInfo, dt, passengerInfo);
-    }
-
-    @Test(expected=TripInteractorBoundary.NotFoundByTripIdException.class)
-    public void if_updateTrip_cannot_find_trip_by_tid_it_throws_NotFoundByTripIdException(){
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        LocationInformation locationInfo = BoundedLocationInformation.Make();
-        Car carInfo = BoundedCar.Make();
-        Rules passengerInfo = BoundedRules.Make();
-        tb.updateTrip(driver1.getAid(), "$$$", locationInfo, carInfo, dt, passengerInfo);
-    }
-
-    @Test
-    public void if_updateTrip_succeed_it_should_have_the_updated_information(){
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,16,9,20);
-        List<String> conditions = new ArrayList<>();
-        conditions.add("No Smoking.");
-        conditions.add("No Vapor.");
-        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("San Fransisco",""));
-        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Honda", "CIVIC","Black"), "WI", "GOWSOX");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        System.out.println(driver1.getAid()+","+t1.getTid());
-        tb.updateTrip(driver1.getAid(), t1.getTid(), locationInfo, carInfo, dt, passengerInfo);
-        Trip updatedTrip = tb.getTripById(t1.getTid());
-
-        Assert.assertEquals(t1.getTid(), updatedTrip.getTid());
-        Assert.assertEquals("Chicago", updatedTrip.getLocationInformation().getStartingPoint().getCity());
-        Assert.assertEquals("60616", updatedTrip.getLocationInformation().getStartingPoint().getZip());
-        Assert.assertEquals("San Fransisco", updatedTrip.getLocationInformation().getEndingPoint().getCity());
-        Assert.assertEquals("", updatedTrip.getLocationInformation().getEndingPoint().getZip());
-
-        Assert.assertEquals("Honda", updatedTrip.getCarInformation().getVehicleInformation().getMake());
-        Assert.assertEquals("CIVIC", updatedTrip.getCarInformation().getVehicleInformation().getModel());
-        Assert.assertEquals("Black", updatedTrip.getCarInformation().getVehicleInformation().getColor());
-        Assert.assertEquals("WI", updatedTrip.getCarInformation().getPlateState());
-        Assert.assertEquals("GOWSOX", updatedTrip.getCarInformation().getPlateSerial());
-
-        Assert.assertEquals(2,updatedTrip.getRules().getMaxPeople());
-        Assert.assertEquals(5.0E00, updatedTrip.getRules().getAmountPerPassenger());
-
-        Assert.assertEquals("16-May-2015", t1.getDateTimeFormat().getDate());
-        Assert.assertEquals("09:20", t1.getDateTimeFormat().getTime());
-
-        for(int i = 0; i < conditions.size(); i++){
-            Assert.assertEquals(conditions.get(i), updatedTrip.getRules().getConditions().get(i));
-        }
-    }
-
-    @Test(expected=TripInteractor.NotFoundByTripIdException.class)
-    public void if_deleteTrip_cannot_find_trip_by_tid_it_throws_NotFoundByTripIdException(){
-       tb.deleteTrip("@@@@");
-    }
-    @Test(expected=TripInteractor.NotFoundByTripIdException.class)
-    public void if_deleteTrip_succeed_and_getPidById_should_throw_NotFoundByTripIdException(){
-       String tid = tids.get(0);
-       tb.deleteTrip(tid);
-       tb.getTripById(tid);
     }
 }

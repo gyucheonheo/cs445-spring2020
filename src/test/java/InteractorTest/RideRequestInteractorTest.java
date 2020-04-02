@@ -1,8 +1,8 @@
 package InteractorTest;
 
-import Boundary.Account.User.AccountInteractorBoundary;
+import Boundary.AccountInteractorBoundary;
 import Boundary.RideRequestInteractorBoundary;
-import Boundary.Trip.TripInteractorBoundary;
+import Boundary.TripInteractorBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Boundary.Trip.Car.Car;
@@ -60,11 +60,6 @@ public class RideRequestInteractorTest {
         ai.activateUser(stranger.getAid());
     }
 
-    @Test(expected=TripInteractorBoundary.NotFoundByTripIdException.class)
-    public void requestRide_to_non_existing_ride_throws_RideNotFoundException(){
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide("asdf", rr);
-    }
 
     @Test
     public void requestRide_to_existing_ride_return_jid(){
@@ -76,23 +71,9 @@ public class RideRequestInteractorTest {
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
         Trip t1 = tb.createTrip( driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
+        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(), 2);
+        rb.requestRide(rr);
 
-    }
-    @Test(expected=RideRequestInteractorBoundary.JoinRequestNotFoundByJidException.class)
-    public void confirmToNonExistingJoinRequest_throws_JoinRequestNotFoundByJidException(){
-        tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
-        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
-        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        Trip t1 = tb.createTrip( driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
-        rb.confirmRide(driver.getAid(),t1.getTid(), "asf");
     }
 
     @Test
@@ -105,57 +86,12 @@ public class RideRequestInteractorTest {
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
         Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
+        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(), 2);
+        rb.requestRide(rr);
         rb.confirmRide(driver.getAid(), t1.getTid(),rr.getJid());
 
         Assert.assertTrue(rr.getIsRideConfirmed());
     }
-
-    @Test(expected=RideRequestInteractorBoundary.UserDoNotHavePermissionToConfirmException.class)
-    public void confirmRideByStranger_must_throw_UserDoNotHavePermissionToConfirmException(){
-        tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
-        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
-        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        Trip t1 = tb.createTrip(driver.getAid(),locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(rider.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
-        rb.confirmRide(stranger.getAid(), t1.getTid(), rr.getJid());
-    }
-
-    @Test(expected=RideRequestInteractorBoundary.UserDoNotHavePermissionToDenyException.class)
-    public void denyRideByStranger_must_throw_UserDoNotHavePermissionToDenyException(){
-        tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
-        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
-        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        Trip t1 = tb.createTrip(driver.getAid(),locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(rider.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
-        rb.denyRide(stranger.getAid(), t1.getTid(), rr.getJid());
-    }
-    @Test(expected=RideRequestInteractorBoundary.JoinRequestNotFoundByJidException.class)
-    public void denyToNonExistingJoinRequest_throws_JoinRequestNotFoundByJidException(){
-        tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
-        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
-        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
-        Trip t1 = tb.createTrip(driver.getAid(),locationInfo, carInfo, dt, passengerInfo);
-        tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
-        rb.denyRide(driver.getAid(), t1.getTid(), "asf");
-    }
-
 
     @Test
     public void denyRideToExistingRide_must_change_ride_confirmed_to_true(){
@@ -167,9 +103,10 @@ public class RideRequestInteractorTest {
         DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
         Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
-        rb.requestRide(t1.getTid(), rr);
+        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(),2);
+        rb.requestRide(rr);
         rb.denyRide(driver.getAid(), t1.getTid(), rr.getJid());
         Assert.assertFalse(rr.getIsRideConfirmed());
     }
+
 }

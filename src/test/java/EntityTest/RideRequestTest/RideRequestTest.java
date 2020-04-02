@@ -1,6 +1,6 @@
 package EntityTest.RideRequestTest;
 
-import Boundary.Account.User.AccountInteractorBoundary;
+import Boundary.AccountInteractorBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
@@ -27,12 +27,12 @@ public class RideRequestTest {
 
     @Test
     public void Make_initially_set_isRideConfirmed_to_null(){
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
+        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), "tripId", 2);
         Assert.assertNull(rr.getIsRideConfirmed());
     }
     @Test
     public void Make_initially_set_isPickUpConfirmed_to_null(){
-        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), 2);
+        RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), "tripId", 2);
         Assert.assertNull(rr.getIsPickUpConfirmed());
     }
 }
