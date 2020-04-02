@@ -1,3 +1,4 @@
+
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,7 +20,7 @@ public class Main {
      */
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
-        final ResourceConfig rc = new ResourceConfig().packages("edu.iit.cs.cs445.spring2020");
+        final ResourceConfig rc = new ResourceConfig().packages("Controller");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
