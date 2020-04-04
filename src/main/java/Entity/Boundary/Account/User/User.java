@@ -21,5 +21,9 @@ public interface User {
 
     String getLastName();
 
+    String getPicture();
+
     CellPhoneFormat getCellPhoneFormat();
+
+    boolean isNil();
 }

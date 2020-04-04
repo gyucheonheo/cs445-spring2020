@@ -70,8 +70,12 @@ public class BoundedUser implements User {
         return this.lastName;
     }
 
+    public String getPicture() { return this.picture;}
+
     public CellPhoneFormat getCellPhoneFormat() {
         return this.cellphone;
     }
+
+    public boolean isNil() { return false; }
 
 }
