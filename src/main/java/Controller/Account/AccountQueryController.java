@@ -1,32 +1,19 @@
 package Controller.Account;
 
-import Boundary.Account.AccountInteractorCommandBoundary;
 import Boundary.Account.AccountInteractorQueryBoundary;
-import Boundary.AccountInteractorBoundary;
-import Boundary.Rate.RateInteractorCommandBoundary;
 import Boundary.Rate.RateInteractorQueryBoundary;
-import Boundary.RateInteractorBoundary;
-import Boundary.RideRequest.RideRequestInteractorCommandBoundary;
 import Boundary.RideRequest.RideRequestInteractorQueryBoundary;
-import Boundary.RideRequestInteractorBoundary;
-import Boundary.Trip.TripInteractorCommandBoundary;
 import Boundary.Trip.TripInteractorQueryBoundary;
-import Boundary.TripInteractorBoundary;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
 import Entity.Boundary.Account.User.User;
-import Interactor.Account.AccountInteractor;
-import Interactor.Account.AccountInteractorCommand;
 import Interactor.Account.AccountInteractorQuery;
-import Interactor.Rate.RateInteractor;
-import Interactor.Rate.RateInteractorCommand;
 import Interactor.Rate.RateInteractorQuery;
-import Interactor.RideRequest.RideRequestInteractor;
-import Interactor.RideRequest.RideRequestInteractorCommand;
 import Interactor.RideRequest.RideRequestInteractorQuery;
-import Interactor.Trip.TripInteractor;
-import Interactor.Trip.TripInteractorCommand;
 import Interactor.Trip.TripInteractorQuery;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

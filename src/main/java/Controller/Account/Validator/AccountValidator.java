@@ -66,8 +66,6 @@ public class AccountValidator {
         String first_name = account.get("first_name").getAsString();
         String last_name = account.get("last_name").getAsString();
         String phone = account.get("phone").getAsString();
-        String picture = account.get("picture").getAsString();
-        boolean isActive = account.get("is_active").getAsBoolean();
 
         if (first_name == null) {
             emsg = "First name is null";

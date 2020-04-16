@@ -1,11 +1,11 @@
 package Controller.RideRequest.Validator;
 
-import Boundary.AccountInteractorBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.Account.AccountInteractorQueryBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.Trip.Trip;
-import Interactor.Account.AccountInteractor;
-import Interactor.Trip.TripInteractor;
+import Interactor.Account.AccountInteractorQuery;
+import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -13,7 +13,7 @@ public class RequestValidator {
     private static String emsg="";
 
     public static boolean isValid(JsonObject jsonObject){
-        AccountInteractorBoundary aib = AccountInteractor.INSTANCE;
+        AccountInteractorQueryBoundary aib = AccountInteractorQuery.INSTANCE;
         String aid = jsonObject.get("aid").getAsString();
         JsonElement rideConfirmed = jsonObject.get("ride_confirmed");
         JsonElement pickupConfirmed = jsonObject.get("pickup_confirmed");
@@ -40,8 +40,8 @@ public class RequestValidator {
     }
     public static boolean isJoinRequestPatchValid(JsonObject jsonObject, String rid){
 
-        AccountInteractorBoundary aib = AccountInteractor.INSTANCE;
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
+        AccountInteractorQueryBoundary aib = AccountInteractorQuery.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
         String aid = jsonObject.get("aid").getAsString();
         JsonElement rideConfirmed = jsonObject.get("ride_confirmed");
         JsonElement pickupConfirmed = jsonObject.get("pickup_confirmed");

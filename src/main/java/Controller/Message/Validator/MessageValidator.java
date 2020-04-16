@@ -1,8 +1,8 @@
 package Controller.Message.Validator;
 
-import Boundary.AccountInteractorBoundary;
+import Boundary.Account.AccountInteractorQueryBoundary;
 import Entity.Boundary.Account.User.User;
-import Interactor.Account.AccountInteractor;
+import Interactor.Account.AccountInteractorQuery;
 import com.google.gson.JsonObject;
 
 public class MessageValidator {
@@ -16,7 +16,7 @@ public class MessageValidator {
             emsg = "aid is empty";
             return false;
         }
-        AccountInteractorBoundary ai = AccountInteractor.INSTANCE;
+        AccountInteractorQueryBoundary ai = AccountInteractorQuery.INSTANCE;
         User u = ai.getUserById(message.get("aid").getAsString());
         if(!u.getIsActive()){
             emsg = "Account is not active";

@@ -1,13 +1,13 @@
 package Interactor.Rate;
 
 import Boundary.Rate.RateInteractorCommandBoundary;
-import Boundary.RideRequestInteractorBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.RideRequest.RideRequestInteractorQueryBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Boundary.Trip.Trip;
-import Interactor.RideRequest.RideRequestInteractor;
-import Interactor.Trip.TripInteractor;
+import Interactor.RideRequest.RideRequestInteractorQuery;
+import Interactor.Trip.TripInteractorQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public enum RateInteractorCommand implements RateInteractorCommandBoundary {
     }
 
         private boolean isAidRiderToTripId(String tripId, String aid){
-            RideRequestInteractorBoundary rri = RideRequestInteractor.INSTANCE;
+            RideRequestInteractorQueryBoundary rri = RideRequestInteractorQuery.INSTANCE;
             RideRequest request = rri.getRequestByTripId(tripId);
             return !request.getAid().equals(aid);
         }
         private void rateDriver(String tripId, Rate r){
-            TripInteractorBoundary ti = TripInteractor.INSTANCE;
+            TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
             Trip t = ti.getTripById(tripId);
 
             String driverAid = t.getAid();
@@ -50,7 +50,7 @@ public enum RateInteractorCommand implements RateInteractorCommandBoundary {
 
         private void rateRider(String tid, Rate r) {
 
-            RideRequestInteractorBoundary rri = RideRequestInteractor.INSTANCE;
+            RideRequestInteractorQueryBoundary rri = RideRequestInteractorQuery.INSTANCE;
             RideRequest request = rri.getRequestByTripId(tid);
 
             String riderAid = request.getAid();

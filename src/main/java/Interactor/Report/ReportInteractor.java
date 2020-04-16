@@ -1,9 +1,9 @@
 package Interactor.Report;
 
 import Boundary.Report.ReportInteractorBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Trip.Trip;
-import Interactor.Trip.TripInteractor;
+import Interactor.Trip.TripInteractorQuery;
 import Lib.UniqueId;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -57,7 +57,7 @@ public enum ReportInteractor implements ReportInteractorBoundary {
     }
 
     public JsonObject addDetailToPostingRideReport(String start_date, String end_date) throws ParseException {
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
         if(start_date == null){
             start_date = "";
         }
@@ -82,7 +82,7 @@ public enum ReportInteractor implements ReportInteractorBoundary {
     }
 
     public JsonObject addDetailToTakingRideReport(String start_date, String end_date) throws ParseException {
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
         if(start_date == null){
             start_date = "";
         }

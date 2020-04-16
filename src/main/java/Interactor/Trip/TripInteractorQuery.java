@@ -1,7 +1,6 @@
 package Interactor.Trip;
 
 import Boundary.RideRequest.RideRequestInteractorQueryBoundary;
-import Boundary.RideRequestInteractorBoundary;
 import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Boundary.Trip.Car.Car;
@@ -10,7 +9,6 @@ import Entity.Boundary.Trip.LocationInformation.LocationInformation;
 import Entity.Boundary.Trip.Rules.Rules;
 import Entity.Boundary.Trip.Trip;
 import Entity.Bounded.Trip.BoundedTrip;
-import Interactor.RideRequest.RideRequestInteractor;
 import Interactor.RideRequest.RideRequestInteractorQuery;
 
 import java.text.ParseException;
@@ -183,7 +181,7 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
             Date end = new SimpleDateFormat("dd-MMM-yyyy").parse(end_date);
             Date tripDate = new SimpleDateFormat("dd-MMM-yyyy").parse(t.getDateTimeFormat().getDate());
             System.out.println(t.getDateTimeFormat().getDate() + "," + (!tripDate.before(start) && !tripDate.after(end)));
-            RideRequestInteractorBoundary rri_t = RideRequestInteractor.INSTANCE;
+            RideRequestInteractorQueryBoundary rri_t = RideRequestInteractorQuery.INSTANCE;
 
             if((!tripDate.before(start) && !tripDate.after(end))
                     &&  (!rri_t.getRequestByTripId(t.getTid()).isNil()
@@ -200,7 +198,7 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
     }
         private int wrappedGetTotalRidesByAid(String aid){
             int total = 0;
-            RideRequestInteractorBoundary rri_temp = RideRequestInteractor.INSTANCE;
+            RideRequestInteractorQueryBoundary rri_temp = RideRequestInteractorQuery.INSTANCE;
             for(Trip t : trips){
                 RideRequest req = rri_temp.getRequestByTripId(t.getTid());
                 if(t.getAid().equals(aid) && ( req.getIsPickUpConfirmed() != null)){

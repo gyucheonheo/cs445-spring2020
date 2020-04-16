@@ -1,11 +1,11 @@
 package Controller.Rate.Validator;
 
-import Boundary.RideRequestInteractorBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.RideRequest.RideRequestInteractorQueryBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Boundary.Trip.Trip;
-import Interactor.RideRequest.RideRequestInteractor;
-import Interactor.Trip.TripInteractor;
+import Interactor.RideRequest.RideRequestInteractorQuery;
+import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.JsonObject;
 
 public class RateValidator {
@@ -24,8 +24,8 @@ public class RateValidator {
 
         String sent_by_id = json.get("sent_by_id").getAsString();
 
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
-        RideRequestInteractorBoundary ri = RideRequestInteractor.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
+        RideRequestInteractorQueryBoundary ri = RideRequestInteractorQuery.INSTANCE;
         Trip t = ti.getTripById(rid);
         RideRequest rr = ri.getRequestByTripId(rid);
 

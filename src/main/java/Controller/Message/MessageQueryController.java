@@ -1,13 +1,11 @@
 package Controller.Message;
 
 import Boundary.Message.MessageInteractorQueryBoundary;
-import Boundary.MessageInteractorBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Message.Message;
 import Entity.Boundary.Trip.Trip;
-import Interactor.Message.MessageInteractor;
 import Interactor.Message.MessageInteractorQuery;
-import Interactor.Trip.TripInteractor;
+import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -30,7 +28,7 @@ public class MessageQueryController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response viewAllRideMessages(@PathParam("rid") String rid){
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
         Trip t = ti.getTripById(rid);
         if(t.isNil()){
             return Response.status(Response.Status.NOT_FOUND).build();

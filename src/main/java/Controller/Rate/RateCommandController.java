@@ -2,11 +2,9 @@ package Controller.Rate;
 
 import Boundary.Rate.RateInteractorCommandBoundary;
 import Boundary.Rate.RateInteractorQueryBoundary;
-import Boundary.RateInteractorBoundary;
 import Controller.ErrorHandler.ErrorMessage;
 import Controller.Rate.Validator.RateValidator;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
-import Interactor.Rate.RateInteractor;
 import Interactor.Rate.RateInteractorCommand;
 import Interactor.Rate.RateInteractorQuery;
 import com.google.gson.Gson;

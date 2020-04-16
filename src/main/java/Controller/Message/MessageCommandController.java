@@ -2,19 +2,22 @@ package Controller.Message;
 
 import Boundary.Message.MessageInteractorCommandBoundary;
 import Boundary.Message.MessageInteractorQueryBoundary;
-import Boundary.TripInteractorBoundary;
+import Boundary.Trip.TripInteractorQueryBoundary;
 import Controller.ErrorHandler.ErrorMessage;
 import Controller.Message.Validator.MessageValidator;
 import Entity.Boundary.Message.Message;
 import Entity.Boundary.Trip.Trip;
 import Interactor.Message.MessageInteractorCommand;
 import Interactor.Message.MessageInteractorQuery;
-import Interactor.Trip.TripInteractor;
+import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javax.ws.rs.*;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,7 +32,7 @@ public class MessageCommandController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response addMessageToRide(@PathParam("rid") String rid, String json){
-        TripInteractorBoundary ti = TripInteractor.INSTANCE;
+        TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;
         Trip t = ti.getTripById(rid);
         if(t.isNil()){
             return Response.status(Response.Status.NOT_FOUND).build();

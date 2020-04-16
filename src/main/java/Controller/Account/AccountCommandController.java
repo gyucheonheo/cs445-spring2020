@@ -2,12 +2,10 @@ package Controller.Account;
 
 import Boundary.Account.AccountInteractorCommandBoundary;
 import Boundary.Account.AccountInteractorQueryBoundary;
-import Boundary.AccountInteractorBoundary;
 import Controller.ErrorHandler.ErrorMessage;
 import Controller.Account.Validator.AccountValidator;
 import Entity.Boundary.Account.User.User;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
-import Interactor.Account.AccountInteractor;
 import Interactor.Account.AccountInteractorCommand;
 import Interactor.Account.AccountInteractorQuery;
 import com.google.gson.Gson;
