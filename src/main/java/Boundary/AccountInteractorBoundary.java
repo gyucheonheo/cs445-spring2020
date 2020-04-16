@@ -6,7 +6,7 @@ import Entity.Boundary.Account.User.User;
 import java.util.List;
 
 public interface AccountInteractorBoundary {
-    List<User> getAllUsers();
+    List<User> getAllUsers(String key);
     User createUser(String first, String last, CellPhoneFormat cellPhone , String picture);
     void registerUser(User u);
     void activateUser(String aid);

@@ -23,7 +23,10 @@ public interface User {
 
     String getPicture();
 
+    String getWhenCreated();
+
     CellPhoneFormat getCellPhoneFormat();
 
     boolean isNil();
+
 }

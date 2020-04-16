@@ -16,6 +16,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +24,11 @@ public class TripTest {
 
     private Trip testTrip;
     @Before
-    public void setUp(){
-        List<String> conditions = new ArrayList<>();
+    public void setUp() throws ParseException {
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make ("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,21);
+        Rules passengerInfo = BoundedRules.Make(2, 5, "");
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("05-May-2015, 09:20");
 
         testTrip = BoundedTrip.Make("aid", locationInfo, carInfo, dt, passengerInfo);
     }

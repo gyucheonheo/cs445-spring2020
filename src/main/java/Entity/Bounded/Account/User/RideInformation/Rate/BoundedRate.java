@@ -7,7 +7,6 @@ import Lib.UniqueId;
 public class BoundedRate implements Rate {
     private String rid;
     private String sentBy;
-    private String firstName;
     private String date;
     private int rating;
     private String comment;
@@ -16,24 +15,19 @@ public class BoundedRate implements Rate {
         return new NullBoundedRate();
     }
         protected BoundedRate(){ }
-    public static Rate Make(String sentBy, String firstName, int rating, String comment){
-        return new BoundedRate(sentBy, firstName, rating, comment);
+    public static Rate Make(String rid, String sentBy, int rating, String comment){
+        return new BoundedRate(rid, sentBy, rating, comment);
     }
-        private BoundedRate(String sentBy, String firstName, int rating, String comment){
-            rid = UniqueId.getUniqueID();
+        private BoundedRate(String rid, String sentBy, int rating, String comment){
+            this.rid = rid;
             date = BoundedDateTimeFormat.MakeNow().getDate();
             setSentBy(sentBy);
-            setFirstName(firstName);
             setRating(rating);
             setComment(comment);
         }
 
             private void setSentBy(String sentBy) {
                 this.sentBy = sentBy;
-            }
-
-            private void setFirstName(String firstName){
-                this.firstName = firstName;
             }
             private void setRating(int rating){
                 this.rating = rating;
@@ -47,9 +41,6 @@ public class BoundedRate implements Rate {
     }
     public String getSentBy(){
         return this.sentBy;
-    }
-    public String getFirstName(){
-        return this.firstName;
     }
     public String getDate(){
         return this.date;

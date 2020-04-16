@@ -72,6 +72,10 @@ public class BoundedUser implements User {
 
     public String getPicture() { return this.picture;}
 
+    public String getWhenCreated() {
+        return this.whenCreated.getDate()+", " + this.whenCreated.getTime();
+    }
+
     public CellPhoneFormat getCellPhoneFormat() {
         return this.cellphone;
     }

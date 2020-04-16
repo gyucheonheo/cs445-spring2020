@@ -37,4 +37,7 @@ public class BoundedRideRequest implements RideRequest{
 
     public void setIsRideConfirmed(Boolean b){ this.isRideConfirmed = b;}
     public void setIsPickUpConfirmed(Boolean b){ this.isPickUpConfirmed = b;}
+    public boolean isNil(){
+        return false;
+    }
 }

@@ -6,7 +6,7 @@ import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
 import Entity.Bounded.Account.User.BoundedUser;
 import Entity.Bounded.RideRequest.BoundedRideRequest;
-import Interactor.AccountInteractor;
+import Interactor.Account.AccountInteractor;
 import junit.framework.Assert;import org.junit.Before;
 
 import org.junit.Test;

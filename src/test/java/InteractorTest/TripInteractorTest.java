@@ -15,10 +15,13 @@ import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
 import Entity.Boundary.Trip.Trip;
-import Interactor.AccountInteractor;
-import Interactor.TripInteractor;
+import Interactor.Account.AccountInteractor;
+import Interactor.Trip.TripInteractor;
+import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class TripInteractorTest {
     private Trip t3;
 
     @Before
-    public void setUp() {
+    public void setUp() throws ParseException {
         tb = TripInteractor.INSTANCE;
         ab = AccountInteractor.INSTANCE;
         driver1 = ab.createUser("driver1", "lastName", BoundedCellPhoneFormat.Make("111","222","3333"), "http://example.com/test.png");
@@ -49,25 +52,25 @@ public class TripInteractorTest {
         ab.activateUser(driver2.getAid());
         ab.activateUser(driver3.getAid());
 
-        List<String> conditions = new ArrayList<>();
+        String conditions = "";
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:00");
         t1 = tb.createTrip(driver1.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
 
         LocationInformation locationInfo1 = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("St Louis",""));
         Car carInfo1 = BoundedCar.Make(BoundedVehicle.Make("Toyota", "HIGHLAND","White"), "NY", "CARDI");
         Rules passengerInfo1 = BoundedRules.Make(4, 15, conditions);
-        DateTimeFormat dt1 = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        DateTimeFormat dt1 = BoundedDateTimeFormat.MakeDateTime("16-May-2020, 09:00");
         t2 = tb.createTrip(driver2.getAid(), locationInfo1, carInfo1, dt1, passengerInfo1);
         tb.registerTrip(t2);
 
         LocationInformation locationInfo2 = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("New York",""));
         Car carInfo2 = BoundedCar.Make(BoundedVehicle.Make("Toyota", "HIGHLAND","White"), "WI", "WHOTATBE");
         Rules passengerInfo2 = BoundedRules.Make(4, 15, conditions);
-        DateTimeFormat dt2 = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        DateTimeFormat dt2 = BoundedDateTimeFormat.MakeDateTime("17-May-2020, 09:00");
         t3 = tb.createTrip(driver3.getAid(), locationInfo2, carInfo2, dt2, passengerInfo2);
         tb.registerTrip(t3);
 
@@ -78,4 +81,173 @@ public class TripInteractorTest {
         tids.add(t3.getTid());
 
     }
+
+    @Test
+    public void getTripsByAccountId_driver1_2_3_should_have_each_one(){
+        List<Trip> tripDriver1 = tb.getTripByUserId(driver1.getAid());
+        List<Trip> tripDriver2 = tb.getTripByUserId(driver2.getAid());
+        List<Trip> tripDriver3 = tb.getTripByUserId(driver3.getAid());
+        Assert.assertEquals(1, tripDriver1.size());
+        Assert.assertEquals(1, tripDriver2.size());
+        Assert.assertEquals(1, tripDriver3.size());
+    }
+    @Test
+    public void registerTrip_should_increase_the_size_of_trips(){
+        int size = tb.getAllTrips(null, null, null).size();
+        tb.registerTrip(t1);
+        int newSize = tb.getAllTrips(null, null, null).size();
+        Assert.assertEquals(size+1,newSize);
+    }
+    @Test
+    public void updateTrip_should_change_its_update_information() throws ParseException {
+        String tripId = t1.getTid();
+        String conditions = "";
+        LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("San Jose", ""), BoundedLocation.Make("Los Angeles",""));
+        Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Big car","White"), "IL", "COVID19");
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:00");
+        Rules passengerInfo = BoundedRules.Make(5, 5, conditions);
+        tb.updateTrip(tripId, locationInfo, carInfo, dt, passengerInfo);
+        Trip newTrip = tb.getTripById(tripId);
+        Assert.assertEquals("San Jose", newTrip.getLocationInformation().getStartingPoint().getCity());
+        Assert.assertEquals("", newTrip.getLocationInformation().getStartingPoint().getZip());
+        Assert.assertEquals("Los Angeles", newTrip.getLocationInformation().getEndingPoint().getCity());
+        Assert.assertEquals("", newTrip.getLocationInformation().getEndingPoint().getZip());
+        Assert.assertEquals("Chevy", newTrip.getCarInformation().getVehicleInformation().getMake());
+        Assert.assertEquals("Big car", newTrip.getCarInformation().getVehicleInformation().getModel());
+        Assert.assertEquals("White", newTrip.getCarInformation().getVehicleInformation().getColor());
+        Assert.assertEquals("IL", newTrip.getCarInformation().getPlateState());
+        Assert.assertEquals("COVID19", newTrip.getCarInformation().getPlateSerial());
+        Assert.assertEquals("15-May-2020", newTrip.getDateTimeFormat().getDate());
+        Assert.assertEquals("09:00", newTrip.getDateTimeFormat().getTime());
+        Assert.assertEquals(5, newTrip.getRules().getMaxPeople());
+        Assert.assertEquals(5.0, newTrip.getRules().getAmountPerPassenger(), 0.01);
+        Assert.assertTrue(newTrip.getRules().getConditions().isEmpty());
+    }
+    @Test
+    public void deleteTrip_should_remove_trip_and_when_trying_to_find_it_should_return_nullTrip(){
+        String tripId = t1.getTid();
+        int size = tb.getAllTrips(null, null, null).size();
+        tb.deleteTrip(tripId);
+        Assert.assertEquals(size-1, tb.getAllTrips(null, null, null).size());
+        Trip t = tb.getTripById(tripId);
+        Assert.assertTrue(t.isNil());
+    }
+
+    @Test
+    public void getTripById_for_t2_should_fetch_trip(){
+        Trip newTrip = tb.getTripById(t2.getTid());
+
+        Assert.assertEquals("Chicago", newTrip.getLocationInformation().getStartingPoint().getCity());
+        Assert.assertEquals("60616", newTrip.getLocationInformation().getStartingPoint().getZip());
+        Assert.assertEquals("St Louis", newTrip.getLocationInformation().getEndingPoint().getCity());
+        Assert.assertEquals("", newTrip.getLocationInformation().getEndingPoint().getZip());
+        Assert.assertEquals("Toyota", newTrip.getCarInformation().getVehicleInformation().getMake());
+        Assert.assertEquals("HIGHLAND", newTrip.getCarInformation().getVehicleInformation().getModel());
+        Assert.assertEquals("White", newTrip.getCarInformation().getVehicleInformation().getColor());
+        Assert.assertEquals("NY", newTrip.getCarInformation().getPlateState());
+        Assert.assertEquals("CARDI", newTrip.getCarInformation().getPlateSerial());
+        Assert.assertEquals("16-May-2020", newTrip.getDateTimeFormat().getDate());
+        Assert.assertEquals("09:00", newTrip.getDateTimeFormat().getTime());
+        Assert.assertEquals(4, newTrip.getRules().getMaxPeople());
+        Assert.assertEquals(15.0, newTrip.getRules().getAmountPerPassenger(), 0.01);
+        Assert.assertTrue(newTrip.getRules().getConditions().isEmpty());
+    }
+    @Test
+    public void getTripById_for_non_existing_should_fetch_nullTrip(){
+        Trip t = tb.getTripById("asdf");
+        Assert.assertTrue(t.isNil());
+    }
+
+    @Test
+    public void getAllTrips_TTT_should_return_allTrips_its_size_is_equal_to_all_trips(){
+        List<Trip> allTrips = tb.getAllTrips("","","");
+        Assert.assertEquals(tb.getAllTrips(null, null, null).size(), allTrips.size());
+    }
+    @Test
+    public void getAllTrips_TTF_should_return_all_trips_when_date_is_2020_05_15(){
+        List<Trip> ttfTrips = tb.getAllTrips("","","15-May-2020");
+        for(Trip t : ttfTrips){
+            Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
+        }
+    }
+    @Test
+    public void getAllTripsFromToDate_from_empty_to_new_york_and_depareture_time_empty_should_have_trips_from_everywhere_to_new_york(){
+        List<Trip> chicagoTrip = tb.getAllTrips("", "New York", "");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
+        }
+    }
+
+    @Test
+    public void getAllTripsFromToDate_from_Chicago_to_Emptyshould_have_trips_from_chicago_to_everywhere(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "", "15-May-2020");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+            Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
+        }
+    }
+
+    @Test
+    public void getAllTripsTFF_hould_have_trips_from_everywhere_to_new_york_when_2020_05_15(){
+        List<Trip> chicagoTrip = tb.getAllTrips("", "New York", "15-May-2020");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("New York", t.getLocationInformation().getStartingPoint().getCity());
+            Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
+        }
+    }
+
+    @Test
+    public void getAllTripsFromToDate_from_Chicago_to_Empty_and_depareture_time_empty_should_have_trips_from_chicago_to_everywhere(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "", "");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+        }
+    }
+
+    @Test
+    public void getAllTrips_FTT__should_have_trips_from_chicago_to_everywhere(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "", "");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+        }
+    }
+
+    @Test
+    public void getAllTrips_FTF__should_have_trips_from_chicago_to_everywhere_but_there_is_not_trip_so_it_should_return_nothing(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "", "19-May-2020");
+        Assert.assertTrue(chicagoTrip.isEmpty());
+    }
+
+    @Test
+    public void getAllTrips_FTF__should_have_trips_from_chicago_to_everywhere(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "", "15-May-2020");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+            Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
+        }
+    }
+
+    @Test
+    public void getAllTrips_FFT__should_have_trips_from_chicago_to_everywhere(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "New York", "");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+            Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
+        }
+    }
+    @Test
+    public void getAllTripsFromToDate_from_Chicago_to_NewYork_should_have_trips_from_chicago_to_New_york(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "New York", "15-May-2020");
+        for(Trip t : chicagoTrip){
+            Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
+            Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
+            Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
+        }
+    }
+    @Test
+    public void getAllTripsFromToDate_from_Chicago_to_Montana_should_have_Nothing(){
+        List<Trip> chicagoTrip = tb.getAllTrips("Chicago", "Montana", "20-May-2020");
+        Assert.assertTrue(chicagoTrip.isEmpty());
+    }
+
 }

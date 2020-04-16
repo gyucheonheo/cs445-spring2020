@@ -19,16 +19,15 @@ import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
-import Interactor.AccountInteractor;
-import Interactor.RideRequestInteractor;
-import Interactor.TripInteractor;
+import Interactor.Account.AccountInteractor;
+import Interactor.RideRequest.RideRequestInteractor;
+import Interactor.Trip.TripInteractor;
 import junit.framework.Assert;
 import org.junit.Before;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 
 public class RideRequestInteractorTest {
     private User unauthorizedUser;
@@ -62,13 +61,13 @@ public class RideRequestInteractorTest {
 
 
     @Test
-    public void requestRide_to_existing_ride_return_jid(){
+    public void requestRide_to_existing_ride_return_jid() throws ParseException {
         tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        Rules passengerInfo = BoundedRules.Make(2, 5, "");
+
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
         Trip t1 = tb.createTrip( driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
         RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(), 2);
@@ -77,13 +76,12 @@ public class RideRequestInteractorTest {
     }
 
     @Test
-    public void confirmRideToExistingRide_must_change_ride_confirmed_to_true(){
+    public void confirmRideToExistingRide_must_change_ride_confirmed_to_true() throws ParseException {
         tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        Rules passengerInfo = BoundedRules.Make(2, 5, "");
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
         Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
         RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(), 2);
@@ -94,13 +92,12 @@ public class RideRequestInteractorTest {
     }
 
     @Test
-    public void denyRideToExistingRide_must_change_ride_confirmed_to_true(){
+    public void denyRideToExistingRide_must_change_ride_confirmed_to_true() throws ParseException {
         tb = TripInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
-        Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,20);
+        Rules passengerInfo = BoundedRules.Make(2, 5, "");
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
         Trip t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
         RideRequest rr = BoundedRideRequest.Make(authorizedUser.getAid(), t1.getTid(),2);

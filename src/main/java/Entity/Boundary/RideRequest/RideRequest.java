@@ -4,6 +4,7 @@ public interface RideRequest {
     String getAid();
     String getJid();
     String getRideId();
+    boolean isNil();
     int getPassengers();
     Boolean getIsRideConfirmed();
     Boolean getIsPickUpConfirmed();

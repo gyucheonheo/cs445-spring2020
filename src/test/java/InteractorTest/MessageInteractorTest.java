@@ -19,12 +19,11 @@ import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
-import Interactor.MessageInteractor;
-import Interactor.TripInteractor;
+import Interactor.Message.MessageInteractor;
+import Interactor.Trip.TripInteractor;
 import org.junit.Before;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 
 public class MessageInteractorTest {
     private static MessageInteractorBoundary mb = MessageInteractor.INSTANCE;
@@ -34,7 +33,7 @@ public class MessageInteractorTest {
     private static TripInteractorBoundary tb = TripInteractor.INSTANCE;
 
     @Before
-    public void setUp_createTrip_before_sending_msg(){
+    public void setUp_createTrip_before_sending_msg() throws ParseException {
         CellPhoneFormat driverCellPhone = BoundedCellPhoneFormat.Make("312","444","5555");
         User driver = BoundedUser.Make("Gyucheon", "Heo", driverCellPhone,"http://example.com/mypicture.jpg");
         driverAid = driver.getAid();
@@ -48,10 +47,9 @@ public class MessageInteractorTest {
         LocationInformation l = BoundedLocationInformation.Make(start, dest);
         Vehicle v = BoundedVehicle.Make("Hyundai", "Elantra", "White");
         Car car = BoundedCar.Make(v, "IL", "ABCDEF");
-        List<String> conditions = new ArrayList<>();
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,15,9,0);
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
 
-        Rules r = BoundedRules.Make(2,6.0, conditions);
+        Rules r = BoundedRules.Make(2,6.0, "");
 
         trip = tb.createTrip(driverAid, l, car, dt, r);
         tb.registerTrip(trip);

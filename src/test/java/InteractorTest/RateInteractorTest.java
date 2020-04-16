@@ -22,15 +22,15 @@ import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
 import Entity.Bounded.Trip.LocationInformation.BoundedLocationInformation;
 import Entity.Bounded.Trip.LocationInformation.Location.BoundedLocation;
 import Entity.Bounded.Trip.Rules.BoundedRules;
-import Interactor.AccountInteractor;
-import Interactor.RateInteractor;
-import Interactor.RideRequestInteractor;
-import Interactor.TripInteractor;
+import Interactor.Account.AccountInteractor;
+import Interactor.Rate.RateInteractor;
+import Interactor.RideRequest.RideRequestInteractor;
+import Interactor.Trip.TripInteractor;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.text.ParseException;
 import java.util.List;
 
 public class RateInteractorTest {
@@ -44,7 +44,7 @@ public class RateInteractorTest {
     private RideRequestInteractorBoundary rri;
     private TripInteractorBoundary tb;
     @Before
-    public void setUp(){
+    public void setUp() throws ParseException {
         rateI = RateInteractor.INSTANCE;
         driver = BoundedUser.Make("driver", "Heo", BoundedCellPhoneFormat.Make("123","333","4444"), "http://google.com/gheo1/jake.png");
         rider = BoundedUser.Make("rider", "Heo", BoundedCellPhoneFormat.Make("123","333","4444"), "http://google.com/gheo1/jake.png");
@@ -58,11 +58,12 @@ public class RateInteractorTest {
         ai.activateUser(stranger.getAid());
         tb = TripInteractor.INSTANCE;
         rri = RideRequestInteractor.INSTANCE;
-        List<String> conditions = new ArrayList<>();
+
+        String conditions = "";
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
 
         t1 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t1);
@@ -73,10 +74,9 @@ public class RateInteractorTest {
     @Test
     public void rateDriver_succeeds_it_should_be_found(){
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Awesome!");
-        rateI.rateDriver(t1.getTid(), r);
+        Rate r = BoundedRate.Make(t1.getTid(),rider.getAid(), 5, "Awesome!");
+        rateI.rateAccount(t1.getTid(), r);
         Assert.assertEquals(r.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getSentBy());
-        Assert.assertEquals(r.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getFirstName());
         Assert.assertEquals(r.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getRating());
         Assert.assertEquals(r.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getComment());
     }
@@ -84,26 +84,24 @@ public class RateInteractorTest {
     @Test
     public void when_rateDriver_succeeds_it_should_be_found(){
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
-        rateI.rateDriver(t1.getTid(), r);
+        Rate r = BoundedRate.Make(t1.getTid(), rider.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t1.getTid(), r);
 
         Assert.assertEquals(r.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getSentBy());
-        Assert.assertEquals(r.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getFirstName());
         Assert.assertEquals(r.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getRating());
         Assert.assertEquals(r.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r.getRid()).getComment());
 
     }
     @Test
-    public void rateDriver_twice_it_should_be_found(){
+    public void rateDriver_twice_it_should_be_found() throws ParseException {
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
-        rateI.rateDriver(t1.getTid(), r);
-
-        List<String> conditions = new ArrayList<>();
+        Rate r = BoundedRate.Make(t1.getTid(),rider.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t1.getTid(), r);
+        String conditions = "";
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
 
         Trip t2 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t2);
@@ -111,10 +109,9 @@ public class RateInteractorTest {
         rri.requestRide(rr);
         rri.confirmRide(driver.getAid(), t2.getTid(), rr.getJid());
 
-        Rate r2 = BoundedRate.Make(rider.getAid(), rider.getFirstName(), 5, "Hello you are good!");
-        rateI.rateDriver(t2.getTid(), r2);
+        Rate r2 = BoundedRate.Make(t2.getTid(), rider.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t2.getTid(), r2);
         Assert.assertEquals(r2.getSentBy(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getSentBy());
-        Assert.assertEquals(r2.getFirstName(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getFirstName());
         Assert.assertEquals(r2.getRating(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getRating());
         Assert.assertEquals(r2.getComment(), rateI.getDriverRateByRateId(driver.getAid(), r2.getRid()).getComment());
     }
@@ -123,26 +120,25 @@ public class RateInteractorTest {
     @Test
     public void when_rateRider_succeeds_it_should_be_found(){
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
-        rateI.rateRider(t1.getTid(), r);
+        Rate r = BoundedRate.Make(t1.getTid(),driver.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t1.getTid(), r);
 
         Assert.assertEquals(r.getSentBy(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getSentBy());
-        Assert.assertEquals(r.getFirstName(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getFirstName());
         Assert.assertEquals(r.getRating(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getRating());
         Assert.assertEquals(r.getComment(), rateI.getRiderRateByRateId(rider.getAid(), r.getRid()).getComment());
 
     }
     @Test
-    public void rateRider_twice_it_should_be_found(){
+    public void rateRider_twice_it_should_be_found() throws ParseException {
         rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
-        rateI.rateRider(t1.getTid(), r);
-
-        List<String> conditions = new ArrayList<>();
+        Rate r = BoundedRate.Make(t1.getTid(), driver.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t1.getTid(), r);
+        String conditions = "";
         LocationInformation locationInfo = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo = BoundedRules.Make(2, 5, conditions);
-        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime(2020,5,10,9,12);
+
+        DateTimeFormat dt = BoundedDateTimeFormat.MakeDateTime("15-May-2020, 09:20");
 
         Trip t2 = tb.createTrip(driver.getAid(), locationInfo, carInfo, dt, passengerInfo);
         tb.registerTrip(t2);
@@ -150,11 +146,36 @@ public class RateInteractorTest {
         rri.requestRide(rr);
         rri.confirmRide(driver.getAid(), t2.getTid(), rr.getJid());
 
-        Rate r2 = BoundedRate.Make(driver.getAid(), driver.getFirstName(), 5, "Hello you are good!");
-        rateI.rateRider(t2.getTid(), r2);
+        Rate r2 = BoundedRate.Make(t2.getTid(), driver.getAid(), 5, "Hello you are good!");
+        rateI.rateAccount(t2.getTid(), r2);
         Assert.assertEquals(r2.getSentBy(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getSentBy());
-        Assert.assertEquals(r2.getFirstName(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getFirstName());
         Assert.assertEquals(r2.getRating(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getRating());
         Assert.assertEquals(r2.getComment(), rateI.getRiderRateByRateId(rider.getAid(), r2.getRid()).getComment());
+    }
+
+    @Test
+    public void driver_has_one_rate_it_should_be_equal_to_getDriverRatesByAccountId(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(t1.getTid(),rider.getAid(), 5, "Awesome!");
+        rateI.rateAccount(t1.getTid(), r);
+        List<Rate> rates = rateI.getDriverRatesByAccountId(driver.getAid());
+        Assert.assertEquals(1, rates.size());
+    }
+    @Test
+    public void getDriverAverageRatingByAccountId(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(t1.getTid(), rider.getAid(), 5, "Awesome!");
+        rateI.rateAccount(t1.getTid(), r);
+
+        Assert.assertEquals(5.0, rateI.getDriverAverageRatingByAccountId(driver.getAid()));
+    }
+    @Test
+    public void rate_twice_getDriverAverageRatingByAccountId(){
+        rri.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
+        Rate r = BoundedRate.Make(t1.getTid(),rider.getAid(),5, "Awesome!");
+        Rate r1 = BoundedRate.Make(t1.getTid(),rider.getAid(),2, "Bad driver!");
+        rateI.rateAccount(t1.getTid(), r);
+        rateI.rateAccount(t1.getTid(), r1);
+        Assert.assertEquals(3.5, rateI.getDriverAverageRatingByAccountId(driver.getAid()));
     }
 }

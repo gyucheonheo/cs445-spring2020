@@ -1,8 +1,6 @@
 package Entity.Bounded.Message;
 
-import Entity.Boundary.Message.Message;
-
-public class NullBoundedMessage implements Message {
+public class NullBoundedMessage extends BoundedMessage {
     @Override
     public boolean isNil(){
         return true;

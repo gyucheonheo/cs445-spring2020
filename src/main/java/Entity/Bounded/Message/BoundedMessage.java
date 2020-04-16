@@ -28,9 +28,27 @@ public class BoundedMessage implements Message {
     public static Message Make(){
         return new NullBoundedMessage();
     }
+        protected BoundedMessage(){
 
+        }
     public boolean isNil(){
         return false;
+    }
+
+    public String getMid() {
+        return this.mid;
+    }
+
+    public String getSentByAid() {
+        return this.sentBy;
+    }
+
+    public String getDate() {
+        return this.date;
+    }
+
+    public String getBody() {
+        return this.body;
     }
 
 }

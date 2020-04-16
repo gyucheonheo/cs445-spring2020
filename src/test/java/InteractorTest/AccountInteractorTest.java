@@ -4,7 +4,7 @@ import Boundary.AccountInteractorBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
 import Entity.Bounded.Account.User.BoundedUser;
-import Interactor.AccountInteractor;
+import Interactor.Account.AccountInteractor;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
