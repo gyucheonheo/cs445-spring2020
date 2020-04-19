@@ -1,14 +1,14 @@
 package EntityTest.RideRequestTest;
 
-import Boundary.AccountInteractorBoundary;
+import Boundary.Account.AccountInteractorCommandBoundary;
 import Entity.Boundary.Account.User.User;
 import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Bounded.Account.CellPhoneFormat.BoundedCellPhoneFormat;
 import Entity.Bounded.Account.User.BoundedUser;
 import Entity.Bounded.RideRequest.BoundedRideRequest;
-import Interactor.Account.AccountInteractor;
-import junit.framework.Assert;import org.junit.Before;
-
+import Interactor.Account.AccountInteractorCommand;
+import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class RideRequestTest {
@@ -20,8 +20,9 @@ public class RideRequestTest {
         unauthorizedUser = BoundedUser.Make("unauthroized","test", BoundedCellPhoneFormat.Make("111","222","3333"), "google.com");
         authorizedUser = BoundedUser.Make("authorized","test", BoundedCellPhoneFormat.Make("111","222","3333"), "google.com");
 
-        AccountInteractorBoundary ai = AccountInteractor.INSTANCE;
-        ai.registerUser(unauthorizedUser);ai.registerUser(authorizedUser);
+        AccountInteractorCommandBoundary ai = AccountInteractorCommand.INSTANCE;
+        ai.registerUser(unauthorizedUser);
+        ai.registerUser(authorizedUser);
         ai.activateUser(authorizedUser.getAid());
     }
 
