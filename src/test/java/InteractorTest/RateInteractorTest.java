@@ -211,12 +211,11 @@ public class RateInteractorTest {
         Assert.assertEquals(null, rate_query_i.getRiderAverageRatingByAccountId("asdf"));
     }
 
-    /* TODO */
     @Test
     public void getRiderAverageRatingByAccountId_should_return_avg_rating_when_user_has_rating(){
         request_command_i.confirmRide(driver.getAid(), t1.getTid(), rr.getJid());
-        Rate r1 = BoundedRate.Make(t1.getTid(),"05-Apr-2020",driver.getAid(),2, "Bad driver!");
-        rate_command_i.rateAccount(t1.getAid(), r1);
-        Assert.assertEquals(2.0, rate_query_i.getRiderAverageRatingByAccountId(rider.getAid()));
+        Rate r = BoundedRate.Make(t1.getTid(),"05-Apr-2020",driver.getAid(), 5, "Awesome!");
+        rate_command_i.rateAccount(t1.getTid(), r);
+        Assert.assertEquals(5.0, rate_query_i.getRiderAverageRatingByAccountId(rider.getAid()));
     }
 }
