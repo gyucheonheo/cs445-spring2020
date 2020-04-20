@@ -19,4 +19,8 @@ public interface ReportInteractorBoundary {
     JsonObject addDetailToPostingRideReport(String start_date, String end_date) throws ParseException;
 
     JsonObject addDetailToTakingRideReport(String start_date, String end_date) throws ParseException;
+
+    JsonObject getPostingRideReport();
+
+    JsonObject getTakingRideReport();
 }
