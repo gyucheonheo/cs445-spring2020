@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum TripInteractorQuery implements TripInteractorQueryBoundary {
     INSTANCE;
@@ -33,74 +34,33 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
 
         /* TODO Cyclometic Complexity is too high (Reason : Missing Polymorphism) */
         private List<Trip> wrappedGetAllTrips(String from, String to, String date) {
-            if (from == null && to == null && date == null) {
-                return trips;
-            }
-            List<Trip> results = new ArrayList<>();
-            if (from.isEmpty() && to.isEmpty() && date.isEmpty()) {
-                return trips;
-            } else if (from.isEmpty() && to.isEmpty() && !date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getDateTimeFormat().getDate().equalsIgnoreCase(date)) {
-                        results.add(t);
-                    }
-                }
-            } else if (from.isEmpty() && !to.isEmpty() && date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getEndingPoint().getCity().equalsIgnoreCase(to)) {
-                        results.add(t);
-                    }
-                }
-            } else if (from.isEmpty() && !to.isEmpty() && !date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getEndingPoint().getCity().equalsIgnoreCase(to) &&
-                            t.getDateTimeFormat().getDate().equalsIgnoreCase(date)
-                    ) {
-                        results.add(t);
-                    }
-                }
-            } else if (!from.isEmpty() && to.isEmpty() && date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getStartingPoint().getCity().equalsIgnoreCase(from)) {
-                        results.add(t);
-                    }
-                }
-            } else if (!from.isEmpty() && !to.isEmpty() && date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getStartingPoint().getCity().equalsIgnoreCase(from) &&
-                            t.getLocationInformation().getEndingPoint().getCity().equalsIgnoreCase(to)
-                    ) {
-                        results.add(t);
-                    }
-                }
-            } else if (!from.isEmpty() && !to.isEmpty() && !date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getStartingPoint().getCity().equalsIgnoreCase(from) &&
-                            t.getLocationInformation().getEndingPoint().getCity().equalsIgnoreCase(to) &&
-                            t.getDateTimeFormat().getDate().equalsIgnoreCase(date)
-                    ) {
-                        results.add(t);
-                    }
-                }
-            } else if (!from.isEmpty() && to.isEmpty() && !date.isEmpty()) {
-                for (Trip t : trips) {
-                    if (t.getLocationInformation().getStartingPoint().getCity().equalsIgnoreCase(from) &&
-                            t.getDateTimeFormat().getDate().equalsIgnoreCase(date)
-                    ) {
-                        results.add(t);
-                    }
-                }
-            }
+
+            final String from_regex = convertToRegex(from);
+            final String to_regex = convertToRegex(to);
+            final String date_regex = convertToRegex(date);
+            List<Trip> results;
+            results = trips.stream().filter(trip ->
+                    trip.getLocationInformation().getStartingPoint().getCity().toLowerCase().matches(from_regex) &&
+                    trip.getLocationInformation().getEndingPoint().getCity().toLowerCase().matches(to_regex) &&
+                    trip.getDateTimeFormat().getDate().toLowerCase().matches(date_regex))
+                    .collect(Collectors.toList());
             return results;
         }
+
+    private String convertToRegex(String data) {
+            if( data == null || data.isEmpty()){
+                return "[a-zA-Z0-9\\- ]*";
+            }
+            return data.toLowerCase();
+    }
 
     public Trip getTripById(String tid) {
         return this.wrappedGetTripById(tid);
     }
 
         private Trip wrappedGetTripById(String tid) {
-            for (Trip t : trips) {
-                if (t.getTid().equals(tid)) {
+            for(Trip t : trips){
+                if(t.getTid().equals(tid)){
                     return t;
                 }
             }
@@ -120,33 +80,36 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
             return result;
         }
     public List<Trip> getPostingTripsBetweenDates(String start_date, String end_date) throws ParseException {
-        if(start_date.isEmpty() && end_date.isEmpty()){
-            return this.getAllTrips("","","");
-        }
-        if(!start_date.isEmpty() && end_date.isEmpty()){
-            return this.getTripsFromStartDateOnly(start_date);
-        }
-        if(start_date.isEmpty() && !end_date.isEmpty()){
-            return this.getTripsToEndDateOnly(end_date);
-        }
+        Date start = convertStartingDate(start_date);
+        Date end = convertEndingDate(end_date);
         List<Trip> result = new ArrayList<>();
         for(Trip t : trips){
-            Date start = new SimpleDateFormat("dd-MMM-yyyy").parse(start_date);
-            Date end = new SimpleDateFormat("dd-MMM-yyyy").parse(end_date);
             Date tripDate = new SimpleDateFormat("dd-MMM-yyyy").parse(t.getDateTimeFormat().getDate());
-            if(tripDate.after(start) && tripDate.before(end)){
+            if(!tripDate.before(start) && !tripDate.after(end)){
                 result.add(t);
             }
         }
         return result;
     }
+        private Date convertStartingDate(String date) throws ParseException {
+            if(date.isEmpty()){
+                return new Date(Long.MIN_VALUE);
+            }
+            return new SimpleDateFormat("dd-MMM-yyyy").parse(date);
+        }
+        private Date convertEndingDate(String date) throws ParseException {
+            if(date.isEmpty()){
+                return new Date(Long.MAX_VALUE);
+            }
+            return new SimpleDateFormat("dd-MMM-yyyy").parse(date);
+        }
 
     private List<Trip> getTripsFromStartDateOnly(String start_date) throws ParseException {
         List<Trip> result = new ArrayList<>();
         for(Trip t : trips){
             Date start = new SimpleDateFormat("dd-MMM-yyyy").parse(start_date);
             Date tripDate = new SimpleDateFormat("dd-MMM-yyyy").parse(t.getDateTimeFormat().getDate());
-            if(tripDate.after(start)){
+            if(tripDate.after(start) || tripDate.equals(start)){
                 result.add(t);
             }
         }
@@ -158,7 +121,7 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
         for(Trip t : trips){
             Date end = new SimpleDateFormat("dd-MMM-yyyy").parse(end_date);
             Date tripDate = new SimpleDateFormat("dd-MMM-yyyy").parse(t.getDateTimeFormat().getDate());
-            if(tripDate.before(end)){
+            if(tripDate.before(end) || tripDate.equals(end)){
                 result.add(t);
             }
         }
@@ -166,23 +129,12 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
     }
 
     public List<Trip> getTakingTripsBetweenDates(String start_date, String end_date) throws ParseException {
-        if(start_date.isEmpty() && end_date.isEmpty()){
-            return this.getAllTrips("","","");
-        }
-        if(!start_date.isEmpty() && end_date.isEmpty()){
-            return this.getTakingTripsFromStartDateOnly(start_date);
-        }
-        if(start_date.isEmpty() && !end_date.isEmpty()){
-            return this.getTakingTripsToEndDateOnly(end_date);
-        }
         List<Trip> result = new ArrayList<>();
+        Date start = convertStartingDate(start_date);
+        Date end = convertEndingDate(end_date);
         for(Trip t : trips){
-            Date start = new SimpleDateFormat("dd-MMM-yyyy").parse(start_date);
-            Date end = new SimpleDateFormat("dd-MMM-yyyy").parse(end_date);
             Date tripDate = new SimpleDateFormat("dd-MMM-yyyy").parse(t.getDateTimeFormat().getDate());
-            System.out.println(t.getDateTimeFormat().getDate() + "," + (!tripDate.before(start) && !tripDate.after(end)));
             RideRequestInteractorQueryBoundary rri_t = RideRequestInteractorQuery.INSTANCE;
-
             if((!tripDate.before(start) && !tripDate.after(end))
                     &&  (!rri_t.getRequestByTripId(t.getTid()).isNil()
                     && rri_t.getRequestByTripId(t.getTid()).getIsPickUpConfirmed())
@@ -222,7 +174,9 @@ public enum TripInteractorQuery implements TripInteractorQueryBoundary {
             }
             return result;
         }
-
+            private Date parseStringDateToDate(String date) throws ParseException {
+                return new SimpleDateFormat("dd-MMM-yyyy").parse(date);
+            }
         private List<Trip> getTakingTripsToEndDateOnly(String end_date) throws ParseException {
             List<Trip> result = new ArrayList<>();
             for(Trip t : trips){
