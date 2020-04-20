@@ -177,6 +177,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTrips_TTF_should_return_all_trips_when_date_is_2020_05_15(){
         List<Trip> ttfTrips = trip_query_i.getAllTrips("","","15-May-2020");
+        Assert.assertEquals(1, ttfTrips.size());
         for(Trip t : ttfTrips){
             Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
         }
@@ -184,6 +185,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTripsFromToDate_from_empty_to_new_york_and_depareture_time_empty_should_have_trips_from_everywhere_to_new_york(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("", "New York", "");
+        Assert.assertEquals(1, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
         }
@@ -192,6 +194,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTripsFromToDate_from_Chicago_to_Emptyshould_have_trips_from_chicago_to_everywhere(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "", "15-May-2020");
+        Assert.assertEquals(1, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
             Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
@@ -201,6 +204,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTripsTFF_hould_have_trips_from_everywhere_to_new_york_when_2020_05_15(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("", "New York", "15-May-2020");
+        Assert.assertEquals(0, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("New York", t.getLocationInformation().getStartingPoint().getCity());
             Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
@@ -210,6 +214,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTripsFromToDate_from_Chicago_to_Empty_and_depareture_time_empty_should_have_trips_from_chicago_to_everywhere(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "", "");
+        Assert.assertEquals(3, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
         }
@@ -218,6 +223,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTrips_FTT__should_have_trips_from_chicago_to_everywhere(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "", "");
+        Assert.assertEquals(3, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
         }
@@ -232,6 +238,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTrips_FTF__should_have_trips_from_chicago_to_everywhere(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "", "15-May-2020");
+        Assert.assertEquals(1, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
             Assert.assertEquals("15-May-2020", t.getDateTimeFormat().getDate());
@@ -241,6 +248,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTrips_FFT__should_have_trips_from_chicago_to_everywhere(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "New York", "");
+        Assert.assertEquals(1, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
             Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
@@ -249,6 +257,7 @@ public class TripInteractorTest {
     @Test
     public void getAllTripsFromToDate_from_Chicago_to_NewYork_should_have_trips_from_chicago_to_New_york(){
         List<Trip> chicagoTrip = trip_query_i.getAllTrips("Chicago", "New York", "15-May-2020");
+        Assert.assertEquals(0, chicagoTrip.size());
         for(Trip t : chicagoTrip){
             Assert.assertEquals("Chicago", t.getLocationInformation().getStartingPoint().getCity());
             Assert.assertEquals("New York", t.getLocationInformation().getEndingPoint().getCity());
@@ -283,9 +292,9 @@ public class TripInteractorTest {
         Assert.assertEquals(1, t.size());
     }
     @Test
-    public void getTakingTripsBetweenDates_should_return_three() throws ParseException {
+    public void getTakingTripsBetweenDates_should_return_zero() throws ParseException {
         List<Trip> t = trip_query_i.getTakingTripsBetweenDates("","");
-        Assert.assertEquals(3, t.size());
+        Assert.assertEquals(0, t.size());
     }
     @Test
     public void getTakingTripsBetweenDates_should_return_empty_because_nothing_confirmed_yet() throws ParseException {
