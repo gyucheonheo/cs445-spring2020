@@ -6,6 +6,7 @@ import Boundary.Trip.TripInteractorCommandBoundary;
 import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Account.CellPhoneFormat.CellPhoneFormat;
 import Entity.Boundary.Account.User.User;
+import Entity.Boundary.Message.Message;
 import Entity.Boundary.Trip.Car.Car;
 import Entity.Boundary.Trip.Car.Vehicle.Vehicle;
 import Entity.Boundary.Trip.DateTimeFormat.DateTimeFormat;
@@ -25,7 +26,10 @@ import Interactor.Message.MessageInteractorCommand;
 import Interactor.Message.MessageInteractorQuery;
 import Interactor.Trip.TripInteractorCommand;
 import Interactor.Trip.TripInteractorQuery;
+import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.text.ParseException;
 
@@ -60,5 +64,31 @@ public class MessageInteractorTest {
         trip = trip_query_i.createTrip(driverAid, l, car, dt, r);
         trip_command_i.registerTrip(trip);
     }
+    @After
+    public void tearUp(){
+       msg_query_i.getAllMessagesByRid(trip.getTid()).clear();
+    }
+    @Test
+    public void initially_rid_has_no_message_namely_it_going_to_create_new_arrayList(){
+        Assert.assertEquals(0, msg_query_i.getAllMessagesByRid(trip.getTid()).size());
+    }
+    @Test
+    public void after_exchanging_two_messages_its_size_should_be_two(){
+        Message m = msg_query_i.createMessage(driverAid, "Where are you going?");
+        msg_command_i.sendMsgToRide(trip.getTid(), m);
+        Message m1 = msg_query_i.createMessage(riderAid, "I am going to Syracuse in Ny");
+        msg_command_i.sendMsgToRide(trip.getTid(),m1);
+        Assert.assertEquals(2, msg_query_i.getAllMessagesByRid(trip.getTid()).size());
+    }
 
+    @Test
+    public void after_exchaning_three_messages_its_size_Should_be_three(){
+        Message m = msg_query_i.createMessage(driverAid, "Where are you going?");
+        msg_command_i.sendMsgToRide(trip.getTid(), m);
+        Message m1 = msg_query_i.createMessage(riderAid, "I am going to Syracuse in Ny");
+        msg_command_i.sendMsgToRide(trip.getTid(),m1);
+        Message m2 = msg_query_i.createMessage(driverAid, "I got you!");
+        msg_command_i.sendMsgToRide(trip.getTid(), m2);
+        Assert.assertEquals(3, msg_query_i.getAllMessagesByRid(trip.getTid()).size());
+    }
 }
