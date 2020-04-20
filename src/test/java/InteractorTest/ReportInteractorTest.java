@@ -27,6 +27,7 @@ import Interactor.Account.AccountInteractorQuery;
 import Interactor.Report.ReportInteractor;
 import Interactor.RideRequest.RideRequestInteractorCommand;
 import Interactor.RideRequest.RideRequestInteractorQuery;
+import Interactor.Trip.TripInteractor;
 import Interactor.Trip.TripInteractorCommand;
 import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.JsonArray;
@@ -41,10 +42,9 @@ public class ReportInteractorTest {
     private ReportInteractorBoundary report_i = ReportInteractor.INSTANCE;
     @After
     public void tearUp(){
-        JsonObject post = report_i.getPostingRideReport();
-        JsonObject taken = report_i.getTakingRideReport();
-        post = new JsonObject();
-        taken = new JsonObject();
+        report_i.cleanUpReport();
+        TripInteractor t = TripInteractor.INSTANCE;
+        t.getTrips().clear();
     }
     @Test
     public void getReports_should_have_two_reports(){
@@ -65,6 +65,8 @@ public class ReportInteractorTest {
 
     @Test
     public void isPidValid_should_return_false_with_not_existing_pid(){
+        report_i.createPostingRideReport();
+        report_i.createTakingRideReport();
         Assert.assertFalse(report_i.isPidValid("asdf"));
     }
     @Test
