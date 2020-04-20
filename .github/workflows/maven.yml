@@ -12,5 +12,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Clean old target
+      run: mvn clean
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Install Dependencies
+      run: mvn install -DskipTests
+    - name: Unit Testings
+      run: mvn test
+    - name : Execute program
+      run: mvn exec:java
