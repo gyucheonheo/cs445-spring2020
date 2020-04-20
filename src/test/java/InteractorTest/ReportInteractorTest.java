@@ -81,7 +81,6 @@ public class ReportInteractorTest {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
         JsonObject p = report_i.getPostingRideReport();
-        JsonObject t = report_i.getTakingRideReport();
         Assert.assertTrue(report_i.isPidRelatedToPostingRideReport(p.get("pid").getAsString()));
     }
 
@@ -89,7 +88,6 @@ public class ReportInteractorTest {
     public void isPidRelatedToPostingRideReport_should_return_false_when_pid_is_NOT_linked_to_posting_report(){
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
-        JsonObject p = report_i.getPostingRideReport();
         JsonObject t = report_i.getTakingRideReport();
         Assert.assertFalse(report_i.isPidRelatedToPostingRideReport(t.get("pid").getAsString()));
     }
@@ -106,7 +104,6 @@ public class ReportInteractorTest {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
         JsonObject p = report_i.getPostingRideReport();
-        JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToPostingRideReport("","");
         Assert.assertEquals("",p.get("start_date").getAsString());
         Assert.assertEquals("", p.get("end_date").getAsString());
@@ -118,7 +115,6 @@ public class ReportInteractorTest {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
         JsonObject p = report_i.getPostingRideReport();
-        JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToPostingRideReport(null,null);
         Assert.assertEquals("",p.get("start_date").getAsString());
         Assert.assertEquals("", p.get("end_date").getAsString());
@@ -153,7 +149,6 @@ public class ReportInteractorTest {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
         JsonObject p = report_i.getPostingRideReport();
-        JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToPostingRideReport(null,null);
         Assert.assertEquals("",p.get("start_date").getAsString());
         Assert.assertEquals("", p.get("end_date").getAsString());
@@ -189,7 +184,6 @@ public class ReportInteractorTest {
         trip_command_i.registerTrip(t1);
 
         Trip t2;
-        String conditions1 = "";
         LocationInformation locationInfo1 = BoundedLocationInformation.Make(BoundedLocation.Make("Chicago", "60616"), BoundedLocation.Make("Los Angeles",""));
         Car carInfo1 =  BoundedCar.Make(BoundedVehicle.Make("Chevy", "Cruze","White"), "IL", "COVID19");
         Rules passengerInfo1 = BoundedRules.Make(2, 5, conditions);
@@ -200,7 +194,6 @@ public class ReportInteractorTest {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
         JsonObject p = report_i.getPostingRideReport();
-        JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToPostingRideReport(null,null);
         Assert.assertEquals("",p.get("start_date").getAsString());
         Assert.assertEquals("", p.get("end_date").getAsString());
@@ -221,7 +214,6 @@ public class ReportInteractorTest {
     public void addDetailToTakingRideReport_should_have_empty_and_zero_result() throws ParseException {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
-        JsonObject p = report_i.getPostingRideReport();
         JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToTakingRideReport("","");
         Assert.assertEquals("",t.get("start_date").getAsString());
@@ -233,7 +225,6 @@ public class ReportInteractorTest {
     public void addDetailToTakingRideReport_should_have_empty_and_zero_result_when_dates_are_null() throws ParseException {
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
-        JsonObject p = report_i.getPostingRideReport();
         JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToTakingRideReport(null,null);
         Assert.assertEquals("",t.get("start_date").getAsString());
@@ -289,7 +280,6 @@ public class ReportInteractorTest {
 
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
-        JsonObject p = report_i.getPostingRideReport();
         JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToTakingRideReport(null,null);
         Assert.assertEquals("",t.get("start_date").getAsString());
@@ -355,7 +345,6 @@ public class ReportInteractorTest {
 
         report_i.createPostingRideReport();
         report_i.createTakingRideReport();
-        JsonObject p = report_i.getPostingRideReport();
         JsonObject t = report_i.getTakingRideReport();
         report_i.addDetailToTakingRideReport(null,null);
         Assert.assertEquals("",t.get("start_date").getAsString());
