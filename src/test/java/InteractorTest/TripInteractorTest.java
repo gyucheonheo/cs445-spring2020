@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TripInteractorTest {
@@ -36,7 +35,6 @@ public class TripInteractorTest {
     private static TripInteractorCommandBoundary trip_command_i;
     private static AccountInteractorQueryBoundary acc_query_i;
     private static AccountInteractorCommandBoundary acc_command_i;
-    private static List<String> tids;
     private User driver1;
     private User driver2;
     private User driver3;
@@ -84,13 +82,6 @@ public class TripInteractorTest {
         DateTimeFormat dt2 = BoundedDateTimeFormat.MakeDateTime("17-May-2020, 09:00");
         t3 = trip_query_i.createTrip(driver3.getAid(), locationInfo2, carInfo2, dt2, passengerInfo2);
         trip_command_i.registerTrip(t3);
-
-        tids = new ArrayList<>();
-
-        tids.add(t1.getTid());
-        tids.add(t2.getTid());
-        tids.add(t3.getTid());
-
     }
 
     @Test
