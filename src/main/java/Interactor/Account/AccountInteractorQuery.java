@@ -5,8 +5,8 @@ import Entity.Boundary.Account.CellPhoneFormat.CellPhoneFormat;
 import Entity.Boundary.Account.User.User;
 import Entity.Bounded.Account.User.BoundedUser;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum AccountInteractorQuery implements AccountInteractorQueryBoundary {
     INSTANCE;
@@ -16,26 +16,25 @@ public enum AccountInteractorQuery implements AccountInteractorQueryBoundary {
         return wrappedGetAllUsers(key);
     }
     private List<User> wrappedGetAllUsers(String key){
-        if ( key == null || key.isEmpty() ) {
-            return this.users;
-        } else {
-            List<User> result = new ArrayList<>();
-            for(User u : users){
-                String lowerKey = key.toLowerCase();
-                if(u.getAid().toLowerCase().contains(lowerKey) ||
-                        u.getLastName().toLowerCase().contains(lowerKey) ||
-                        u.getFirstName().toLowerCase().contains(lowerKey) ||
-                        u.getCellPhoneFormat().getFirst().toLowerCase().contains(lowerKey)||
-                        u.getCellPhoneFormat().getLast().toLowerCase().contains(lowerKey) ||
-                        u.getCellPhoneFormat().getMiddle().toLowerCase().contains(lowerKey)
-                ){
-                    result.add(u);
-                }
-            }
+        List<User> result;
+        String lowerKey = convertToRegex(key);
+        result = users.stream()
+                .filter( u ->
+                u.getAid().toLowerCase().matches(lowerKey) ||
+                u.getLastName().toLowerCase().matches(lowerKey) ||
+                u.getFirstName().toLowerCase().matches(lowerKey) ||
+                u.getCellPhoneFormat().getFirst().toLowerCase().matches(lowerKey)||
+                u.getCellPhoneFormat().getLast().toLowerCase().matches(lowerKey) ||
+                u.getCellPhoneFormat().getMiddle().toLowerCase().matches(lowerKey)
+                ).collect(Collectors.toList());
             return result;
-        }
     }
-
+    private String convertToRegex(String data) {
+        if (data == null || data.isEmpty()) {
+            return "[a-zA-Z0-9\\- ]*";
+        }
+        return ".*"+data.toLowerCase()+".*";
+    }
     public User createUser(String first, String last, CellPhoneFormat cellPhone, String picture){
         return BoundedUser.Make(first, last, cellPhone, picture);
     }
@@ -44,9 +43,6 @@ public enum AccountInteractorQuery implements AccountInteractorQueryBoundary {
         return wrappedGetUserById(aid);
     }
 
-    public List<User> searchUserByKeyword(String s) {
-        return null;
-    }
         private User wrappedGetUserById(String aid){
             for(User u : users){
                 if(u.getAid().equals(aid)){
