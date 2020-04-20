@@ -9,7 +9,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.text.ParseException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public enum ReportInteractor implements ReportInteractorBoundary {
@@ -46,10 +48,7 @@ public enum ReportInteractor implements ReportInteractorBoundary {
             return true;
         }
 
-        if(takingRideReport.get("pid").getAsString().equals(pid)){
-            return true;
-        }
-        return false;
+        return takingRideReport.get("pid").getAsString().equals(pid);
     }
 
     public boolean isPidRelatedToPostingRideReport(String pid) {
@@ -67,13 +66,23 @@ public enum ReportInteractor implements ReportInteractorBoundary {
         postingRideReport.addProperty("start_date", start_date);
         postingRideReport.addProperty("end_date", end_date);
         List<Trip> result = ti.getPostingTripsBetweenDates(start_date, end_date);
-        JsonArray details = new JsonArray();
+        Map<String, Map<String, Integer>> counter_per_zip = new LinkedHashMap<>();
         for(Trip t : result){
-            JsonObject singleTrip = new JsonObject();
-            singleTrip.addProperty("from_zip", t.getLocationInformation().getStartingPoint().getZip());
-            singleTrip.addProperty("to_zip", t.getLocationInformation().getEndingPoint().getZip());
-            singleTrip.addProperty("count", 1);
-            details.add(singleTrip);
+            counter_per_zip.computeIfAbsent(t.getLocationInformation().getStartingPoint().getZip(),
+                    e -> new LinkedHashMap<>()).compute(t.getLocationInformation().getEndingPoint().getZip(),
+                    (k, v) -> v == null ? 1 : v + 1);
+        }
+
+        JsonArray details = new JsonArray();
+        for(Map.Entry<String, Map<String, Integer>> entry : counter_per_zip.entrySet()){
+            String from = entry.getKey();
+            for(Map.Entry<String, Integer> to_entry : entry.getValue().entrySet()){
+                JsonObject singleTrip = new JsonObject();
+                singleTrip.addProperty("from_zip", from);
+                singleTrip.addProperty("to_zip", to_entry.getKey());
+                singleTrip.addProperty("count",  to_entry.getValue());
+                details.add(singleTrip);
+            }
         }
         postingRideReport.addProperty("rides", result.size());
         postingRideReport.add("detail", details);
@@ -92,13 +101,23 @@ public enum ReportInteractor implements ReportInteractorBoundary {
         takingRideReport.addProperty("start_date", start_date);
         takingRideReport.addProperty("end_date", end_date);
         List<Trip> result = ti.getTakingTripsBetweenDates(start_date, end_date);
-        JsonArray details = new JsonArray();
+        Map<String, Map<String, Integer>> counter_per_zip = new LinkedHashMap<>();
         for(Trip t : result){
-            JsonObject singleTrip = new JsonObject();
-            singleTrip.addProperty("from_zip", t.getLocationInformation().getStartingPoint().getZip());
-            singleTrip.addProperty("to_zip", t.getLocationInformation().getEndingPoint().getZip());
-            singleTrip.addProperty("count", 1);
-            details.add(singleTrip);
+            counter_per_zip.computeIfAbsent(t.getLocationInformation().getStartingPoint().getZip(),
+                    e -> new LinkedHashMap<>()).compute(t.getLocationInformation().getEndingPoint().getZip(),
+                    (k, v) -> v == null ? 1 : v + 1);
+        }
+
+        JsonArray details = new JsonArray();
+        for(Map.Entry<String, Map<String, Integer>> entry : counter_per_zip.entrySet()){
+            String from = entry.getKey();
+            for(Map.Entry<String, Integer> to_entry : entry.getValue().entrySet()){
+                JsonObject singleTrip = new JsonObject();
+                singleTrip.addProperty("from_zip", from);
+                singleTrip.addProperty("to_zip", to_entry.getKey());
+                singleTrip.addProperty("count",  to_entry.getValue());
+                details.add(singleTrip);
+            }
         }
         takingRideReport.addProperty("rides", result.size());
         takingRideReport.add("detail", details);
@@ -112,5 +131,9 @@ public enum ReportInteractor implements ReportInteractorBoundary {
 
     public JsonObject getTakingRideReport() {
         return this.takingRideReport;
+    }
+    public void cleanUpReport(){
+        this.postingRideReport = new JsonObject();
+        this.takingRideReport = new JsonObject();
     }
 }
