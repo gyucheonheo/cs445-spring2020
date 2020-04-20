@@ -23,4 +23,6 @@ public interface ReportInteractorBoundary {
     JsonObject getPostingRideReport();
 
     JsonObject getTakingRideReport();
+
+    void cleanUpReport();
 }
