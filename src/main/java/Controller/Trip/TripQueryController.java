@@ -2,17 +2,17 @@ package Controller.Trip;
 
 import Boundary.Account.AccountInteractorQueryBoundary;
 import Boundary.Rate.RateInteractorQueryBoundary;
-import Boundary.RideRequest.RideRequestInteractorQueryBoundary;
 import Boundary.Trip.TripInteractorQueryBoundary;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
 import Entity.Boundary.Account.User.User;
-import Entity.Boundary.RideRequest.RideRequest;
 import Entity.Boundary.Trip.Trip;
 import Interactor.Account.AccountInteractorQuery;
 import Interactor.Rate.RateInteractorQuery;
-import Interactor.RideRequest.RideRequestInteractorQuery;
 import Interactor.Trip.TripInteractorQuery;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -84,18 +84,7 @@ public class TripQueryController {
         result.addProperty("conditions", t.getRules().getConditions());
         result.addProperty("driver", u.getFirstName());
         result.addProperty("driver_picture", u.getPicture());
-        /* TODO */
-        int rides=0;
-        RideRequestInteractorQueryBoundary rri = RideRequestInteractorQuery.INSTANCE;
-        for(Trip trip : trip_query_i.getTripByUserId(u.getAid())){
-           RideRequest rr = rri.getRequestByTripId(trip.getTid());
-           if(rr.isNil()){
-               continue;
-           }
-           if(rr.getIsPickUpConfirmed()){
-               rides++;
-           }
-        }
+        int rides = trip_query_i.getTotalRidesByAid(u.getAid());
         result.addProperty("rides", rides);
         result.addProperty("ratings", rates.size());
 

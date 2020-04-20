@@ -17,7 +17,6 @@ public enum RideRequestInteractorQuery implements RideRequestInteractorQueryBoun
         return this.wrappedRequestRide(request);
     }
     private String wrappedRequestRide(RideRequest request){
-        tb.getTripById(request.getRideId());
         requests.add(request);
         return request.getJid();
     }

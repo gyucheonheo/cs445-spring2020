@@ -1,8 +1,6 @@
 package Entity.Bounded.Account.User.RideInformation.Rate;
 
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
-import Entity.Bounded.Trip.DateTimeFormat.BoundedDateTimeFormat;
-import Lib.UniqueId;
 
 public class BoundedRate implements Rate {
     private String rid;
@@ -15,12 +13,12 @@ public class BoundedRate implements Rate {
         return new NullBoundedRate();
     }
         protected BoundedRate(){ }
-    public static Rate Make(String rid, String sentBy, int rating, String comment){
-        return new BoundedRate(rid, sentBy, rating, comment);
+    public static Rate Make(String rid, String date, String sentBy, int rating, String comment){
+        return new BoundedRate(rid, date, sentBy, rating, comment);
     }
-        private BoundedRate(String rid, String sentBy, int rating, String comment){
+        private BoundedRate(String rid, String date, String sentBy, int rating, String comment){
             this.rid = rid;
-            date = BoundedDateTimeFormat.MakeNow().getDate();
+            this.date = date;
             setSentBy(sentBy);
             setRating(rating);
             setComment(comment);
@@ -51,6 +49,7 @@ public class BoundedRate implements Rate {
     public String getComment(){
         return this.comment;
     }
+    public boolean isNil(){ return false; }
 }
 
 

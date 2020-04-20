@@ -20,8 +20,10 @@ public enum RateInteractorCommand implements RateInteractorCommandBoundary {
 
     public void rateAccount(String tripId, Rate r){
         if( this.isAidRiderToTripId(tripId, r.getSentBy()) ){
+            System.out.println("rate Rider");
             rateRider(tripId, r);
         } else {
+            System.out.println("rate Driver");
             rateDriver(tripId, r);
         }
     }
@@ -29,7 +31,11 @@ public enum RateInteractorCommand implements RateInteractorCommandBoundary {
         private boolean isAidRiderToTripId(String tripId, String aid){
             RideRequestInteractorQueryBoundary rri = RideRequestInteractorQuery.INSTANCE;
             RideRequest request = rri.getRequestByTripId(tripId);
-            return !request.getAid().equals(aid);
+            try {
+                return !request.getAid().equals(aid);
+            } catch(Exception e){
+                return false;
+            }
         }
         private void rateDriver(String tripId, Rate r){
             TripInteractorQueryBoundary ti = TripInteractorQuery.INSTANCE;

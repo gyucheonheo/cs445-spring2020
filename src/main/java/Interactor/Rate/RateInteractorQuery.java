@@ -13,8 +13,8 @@ public enum RateInteractorQuery implements RateInteractorQueryBoundary {
     private Map<String, List<Rate>> rateToDriver = RateInteractor.INSTANCE.getDriverRate();
     private Map<String, List<Rate>> rateToRider = RateInteractor.INSTANCE.getRiderRate();
 
-    public Rate createRate(String rid, String sentBy, int rating, String comment) {
-        return BoundedRate.Make(rid, sentBy, rating, comment);
+    public Rate createRate(String rid, String date, String sentBy, int rating, String comment) {
+        return BoundedRate.Make(rid, date, sentBy, rating, comment);
     }
 
     public Rate getDriverRateByRateId(String driverId, String rateId) {
@@ -22,7 +22,7 @@ public enum RateInteractorQuery implements RateInteractorQueryBoundary {
     }
 
     private Rate wrappedGetDriverRateByRateId(String driverId, String rateId) {
-        List<Rate> rates = rateToDriver.get(driverId);
+        List<Rate> rates = rateToDriver.getOrDefault(driverId, new ArrayList<>());
         for(Rate r : rates){
             if(r.getRid().equals(rateId)){
                 return r;
@@ -34,7 +34,7 @@ public enum RateInteractorQuery implements RateInteractorQueryBoundary {
         return wrappedGetRiderRateByRateId(riderId, rateId);
     }
     private Rate wrappedGetRiderRateByRateId(String riderId, String rateId) {
-        List<Rate> rates = rateToRider.get(riderId);
+        List<Rate> rates = rateToRider.getOrDefault(riderId, new ArrayList<>());
         for(Rate r : rates){
             if(r.getRid().equals(rateId)){
                 return r;

@@ -9,5 +9,4 @@ public interface AccountInteractorQueryBoundary {
     List<User> getAllUsers(String key);
     User createUser(String first, String last, CellPhoneFormat cellPhone , String picture);
     User getUserById(String aid);
-    List<User> searchUserByKeyword(String s);
 }

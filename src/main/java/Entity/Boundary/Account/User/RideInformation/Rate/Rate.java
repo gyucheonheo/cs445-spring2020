@@ -6,6 +6,6 @@ public interface Rate {
     String getDate();
     int getRating();
     String getComment();
-
+    boolean isNil();
 }
 

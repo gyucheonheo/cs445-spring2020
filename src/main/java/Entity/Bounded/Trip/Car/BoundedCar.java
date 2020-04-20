@@ -2,7 +2,6 @@ package Entity.Bounded.Trip.Car;
 
 import Entity.Boundary.Trip.Car.Car;
 import Entity.Boundary.Trip.Car.Vehicle.Vehicle;
-import Entity.Bounded.Trip.Car.Vehicle.BoundedVehicle;
 
 public class BoundedCar implements Car {
     private Vehicle vehicleInformation;
@@ -28,6 +27,7 @@ public class BoundedCar implements Car {
     public boolean isNil(){
         return false;
     }
+
     public Vehicle getVehicleInformation() { return this.vehicleInformation; }
     public String getPlateState(){
         return this.plateState;

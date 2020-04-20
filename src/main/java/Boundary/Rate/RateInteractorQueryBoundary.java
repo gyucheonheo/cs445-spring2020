@@ -11,5 +11,5 @@ public interface RateInteractorQueryBoundary {
     List<Rate> getRiderRatesByAccountId(String aid);
     Double getDriverAverageRatingByAccountId(String aid);
     Double getRiderAverageRatingByAccountId(String aid);
-    Rate createRate(String rid, String sentBy, int rating, String comment);
+    Rate createRate(String rid, String date, String sentBy, int rating, String comment);
 }

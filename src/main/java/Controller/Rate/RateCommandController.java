@@ -5,8 +5,10 @@ import Boundary.Rate.RateInteractorQueryBoundary;
 import Controller.ErrorHandler.ErrorMessage;
 import Controller.Rate.Validator.RateValidator;
 import Entity.Boundary.Account.User.RideInformation.Rate.Rate;
+import Entity.Boundary.Trip.Trip;
 import Interactor.Rate.RateInteractorCommand;
 import Interactor.Rate.RateInteractorQuery;
+import Interactor.Trip.TripInteractorQuery;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -40,8 +42,9 @@ public class RateCommandController {
         String sent_by_id = jsonObject.get("sent_by_id").getAsString();
         int rating = jsonObject.get("rating").getAsInt();
         String comment = jsonObject.get("comment").getAsString();
+        Trip t = TripInteractorQuery.INSTANCE.getTripById(rid);
 
-        Rate r = rate_query_i.createRate(rid, sent_by_id, rating,comment);
+        Rate r = rate_query_i.createRate(rid, t.getDateTimeFormat().getDate(),sent_by_id, rating,comment);
         rate_command_i.rateAccount(rid, r);
         JsonObject result = new JsonObject();
         result.addProperty("sid", r.getRid());

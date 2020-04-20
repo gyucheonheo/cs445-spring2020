@@ -6,7 +6,5 @@ public interface Car {
     Vehicle getVehicleInformation();
     String getPlateState();
     String getPlateSerial();
-
     boolean isNil();
-
 }
