@@ -15,8 +15,7 @@ public class RequestValidator {
         JsonElement rideConfirmed = jsonObject.get("ride_confirmed");
         JsonElement pickupConfirmed = jsonObject.get("pickup_confirmed");
         User u = aib.getUserById(aid);
-        boolean isValid = isUserNull(u) && isUserActive(u) && isRideConfirmedJsonNull(rideConfirmed) && isPickUpConfirmedJsonNull(pickupConfirmed);
-        return isValid;
+        return isUserNull(u) && isUserActive(u) && isRideConfirmedJsonNull(rideConfirmed) && isPickUpConfirmedJsonNull(pickupConfirmed);
     }
     private static boolean isUserNull(User u){
         if(u.isNil()){
