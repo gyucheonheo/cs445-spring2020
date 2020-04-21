@@ -20,10 +20,8 @@ public enum RateInteractorCommand implements RateInteractorCommandBoundary {
 
     public void rateAccount(String tripId, Rate r){
         if( this.isAidRiderToTripId(tripId, r.getSentBy()) ){
-            System.out.println("rate Rider");
             rateRider(tripId, r);
         } else {
-            System.out.println("rate Driver");
             rateDriver(tripId, r);
         }
     }
