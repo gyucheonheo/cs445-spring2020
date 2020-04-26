@@ -45,8 +45,6 @@ public class RideRequestCommandController {
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
         RideRequest r = req_query_i.getRequestByJid(jid);
 
-        /* TODO : REFACTOR (Don't ask tell) */
-        /* Add Validator */
         if (jsonObject.has("ride_confirmed")) {
             if(jsonObject.get("ride_confirmed").isJsonNull()){
                 JsonObject err = error.createError("Invalid ride_confirmed", 400, "/rides/"+rid+"/join_requests/"+jid);
