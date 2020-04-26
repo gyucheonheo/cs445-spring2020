@@ -27,9 +27,6 @@ public class BoundedRules implements Rules {
     }
 
     public Double getAmountPerPassenger(){
-        if(this.amount_per_passenger == 0.0){
-            return null;
-        }
         return this.amount_per_passenger;
     }
 
