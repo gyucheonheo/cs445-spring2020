@@ -1,0 +1,37 @@
+
+The Share a Ride project is done on 25-Apr-2020. 
+The projects meets all requirements by providing all use cases through public APIs and
+satisfies 100% class test coverage, 100% method coverage, 98% line coverage.
+Please note that the coverage does not count getter, setter, test-oriented methods, and any methods associated with Controller.
+
+1. Link to repository : http://github.com/gyucheonheo/cs445-spring2020
+
+2. Lines Of Code : 2664 lines
+
+3. Lines of Unit Test : 2361 lines
+
+4. Cyclomatic Complexity 
+* The highest : 7 from ReportInteractor.addDetailToTakingRideReport
+* The highest : 7 from ReportInteractor.addDetailToPostingRideReport
+
+5. The Number of hours you needed to get the code working.
+27.4 hours
+
+6. The number of hours you spent preparing the submission
+2 hours
+
+7. 
+
+* While implementing searchTrip with three parameters, its cyclomatic complexity was beyond 50 because of many conditional branches.
+* Solution :
+* Setting empty values in arguments to wildcard in regular expression can remove long if-else statements
+* In addition, with the power of Java 8, stream().filter() helps me to reduce the cyclomatic complexity.
+
+* While implementing Validator, by the nature of validation, I thought that there must be many if-else statements in one method. Consequently, it had high cyclomatic complexity.
+* Solution :
+* I splited a long `isValid` method into many small methods returning true or false and
+* in `isValid`, I make it return the value of AND logical operator of all values of small methods.
+
+
+
+
