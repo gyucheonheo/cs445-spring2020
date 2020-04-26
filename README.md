@@ -13,6 +13,14 @@ $>sudo apt update
 ```
 $>sudo apt install openjdk-8-jdk
 ```
+* Check Java version
+```
+$>java -version
+```
+* If Java version is not 1.8, update the version to 8 by selecting the appropriate number.
+```
+$>sudo update-alternatives --config java
+```
 * Install Maven
 ```
 $>sudo apt install maven
