@@ -6,21 +6,26 @@
 Assume that your working environment is Ubuntu 18.04 LTS.
 
 * Update
+```
 $>sudo apt update
-
+```
 * Install openjdk-8-jdk
+```
 $>sudo apt install openjdk-8-jdk
-
+```
 * Install Maven
+```
 $>sudo apt install maven
-
+```
 ## Build and Deploy Instructions
 * Install and Compile (Assume that you are under a directory where pom.xml exists)
+```
 $>mvn install compile test
-
+```
 * Run the webserver
+```
 $>mvn exec:java
-
+```
 ## Copyright and License
 
 Permission is hereby granted, free of change, to any person obtaining
